@@ -2,8 +2,9 @@ import db from '@/lib/db';
 import { JoiSettings } from '@/lib/joi';
 import respond from '@/lib/response/respond';
 import Joi from 'joi';
-import argon2 from 'argon2';
 import { NextRequest } from 'next/server';
+import { passwordValidator } from "@/lib/validators";
+import hashPassword from "@/lib/hashPassword";
 
 interface PostRequest {
   email: string;
@@ -14,9 +15,9 @@ interface PostRequest {
 const postSchema = Joi.object<PostRequest>({
   email: Joi.string()
     .trim()
-    .email({ tlds: { allow: false } })
+    .email({tlds: {allow: false}})
     .required(),
-  password: Joi.string().trim().alphanum().min(1).required(),
+  password: passwordValidator.required(),
   terms: Joi.boolean().invalid(false).required()
 });
 
@@ -29,14 +30,14 @@ export async function POST(req: NextRequest) {
     }
 
     const count = await db.users.count({
-      where: { email: result.value.email },
+      where: {email: result.value.email},
     });
 
     if (count > 0) {
       return respond.withErrors(['Email is already in use.']);
     }
 
-    const hash = await argon2.hash(result.value.password);
+    const hash = await hashPassword(result.value.password);
 
     await db.users.create({
       data: {

@@ -6,8 +6,9 @@ import { FormState, newFormState } from './state';
 import { ComponentController } from '../componentController';
 import { ObjectSchema } from 'joi';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
 export default class FormController<T> extends ComponentController<FormState> {
   defaultState = newFormState();
@@ -17,12 +18,14 @@ export default class FormController<T> extends ComponentController<FormState> {
   updateForm: Dispatch<SetStateAction<T>>;
   formSchema: ObjectSchema<T>;
   submit = false;
+  params: Params;
 
   onRender = () => {
     [this.state, this.updateState] = useState<FormState>(this.defaultState);
     [this.form, this.updateForm] = useState<T>(this.defaultForm);
     this.router = useRouter();
     this.queryClient = useQueryClient();
+    this.params = useParams();
   };
 
   reset = () => {
