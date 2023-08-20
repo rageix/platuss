@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id            String          @id @default(uuid())
+  active        Boolean         @default(true)
+  email         String          @unique
+  emailVerified Boolean         @default(false)
+  firstName     String?
+  lastName      String?
+  image         String?
+  createdAt     DateTime        @db.Timestamptz()
+  updatedAt     DateTime        @db.Timestamptz()
+  password      Passwords?
+  verifyEmail   VerifyEmail[]
+  passwordReset PasswordReset[]
+}
+
+model Passwords {
+  userId String @id @unique
+  user   Users  @relation(fields: [userId], references: [id])
+  hash   String
+}
+
+model VerifyEmail {
+  id        String   @id @default(uuid())
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id])
+  createdAt DateTime @db.Timestamptz()
+}
+
+model PasswordReset {
+  id      String   @id @default(uuid())
+  userId  String
+  user    Users    @relation(fields: [userId], references: [id])
+  expires DateTime @db.Timestamptz()
+}
