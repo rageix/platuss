@@ -1,7 +1,5 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-// import LogInForm from "../LogInForm/LogInForm.tsx";
-// import SignUpForm from "../SignUpForm/SignUpForm.tsx";
 
 interface Props {
   show: boolean,

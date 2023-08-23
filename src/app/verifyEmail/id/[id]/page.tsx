@@ -4,7 +4,7 @@ import { JoiSettings } from '@/lib/joi';
 import db from '@/lib/db';
 import Joi from 'joi';
 import { uuidValidator } from '@/lib/validators';
-import log from '@/lib/log/logger';
+import log from '@/lib/logger';
 export const metadata: Metadata = {
   title: 'Verify Email',
 };

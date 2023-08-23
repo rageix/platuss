@@ -19,14 +19,5 @@ export interface BackendResponse<T> {
   error?: ResponseError,
   data?: T,
   errors?: string[],
-  redirect: string,
-}
-
-export interface ErrorResponse {
-  errors: string[]
-}
-
-export interface ValidationError {
-  path: string,
-  errors: string[]
+  redirect?: string,
 }

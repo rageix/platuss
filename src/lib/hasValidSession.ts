@@ -3,6 +3,7 @@ import { RequestCookies } from "next/dist/server/web/spec-extension/cookies";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { decrypt } from "@/lib/crytpo";
 import { Session } from "@/lib/session";
+import _ from "lodash";
 
 export function hasValidSession(
   cookies: ReadonlyRequestCookies | RequestCookies,
@@ -16,6 +17,6 @@ export function hasValidSession(
 
   const session = decrypt<Session>(cookie.value, process.env.SESSION_SECRET);
 
-  return new Date(session.expires) >= new Date();
+  return !_.isEmpty(session.userId);
 
 }

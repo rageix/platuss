@@ -2,13 +2,15 @@ import { ValidationErrorItem } from 'joi';
 
 interface Props {
   errors: ValidationErrorItem[];
-  id?: string
+  id?: string;
+  "data-testid"?: string,
 }
 
 export default function FormErrors(props: Props) {
 
   return (
-    <div id={props.id}>
+    <div id={props.id}
+    data-testid={props["data-testid"]}>
       {props.errors.map((v, i) => (
         <p
           key={i}

@@ -8,7 +8,6 @@ import Checkbox from '../checkbox/Checkbox';
 import PrimaryButton from '../buttons/PrimaryButton';
 import Label from '../label/Label';
 import FormLabel from '@/components/formLabel/FormLabel';
-import FormWrapper from "@/components/wrappers/FormWrapper";
 
 const controller = new Controller();
 export default function SignUpForm() {
@@ -21,10 +20,10 @@ export default function SignUpForm() {
   const termsErrors = formErrorsByPath(state, 'terms');
 
   return (
-    <FormWrapper h2="Create new account">
       <form
         className="space-y-6"
         onSubmit={controller.onSubmitForm}
+        data-testid="signUpForm"
       >
         <div>
           <FormLabel htmlFor="email">Email</FormLabel>
@@ -32,16 +31,18 @@ export default function SignUpForm() {
             <Input
               id="email"
               name="email"
+              data-testid="email"
               autoComplete="email"
               value={form.email}
               onChange={controller.onChangeEmail}
-              aria-describedby="email-errors"
+              aria-describedby="emailErrors"
               aria-invalid={emailErrors.length > 0}
             />
           </div>
           <FormErrors
             errors={emailErrors}
-            id="email-errors"
+            id="emailErrors"
+            data-testid="emailErrors"
           />
         </div>
         <div>
@@ -52,17 +53,19 @@ export default function SignUpForm() {
             <Input
               id="password"
               name="password"
+              data-testid="password"
               type="password"
               autoComplete="current-password"
               value={form.password}
               onChange={controller.onChangePassword}
-              aria-describedby="password-errors"
+              aria-describedby="passwordErrors"
               aria-invalid={passwordErrors.length > 0}
             />
           </div>
           <FormErrors
             errors={passwordErrors}
-            id="password-errors"
+            id="passwordErrors"
+            data-testid="passwordErrors"
           />
         </div>
         <div>
@@ -73,32 +76,35 @@ export default function SignUpForm() {
             <Input
               id="passwordAgain"
               name="passwordAgain"
+              data-testid="passwordAgain"
               type="password"
               autoComplete="current-password"
               value={form.passwordAgain}
               onChange={controller.onChangePasswordAgain}
-              aria-describedby="password-again-errors"
+              aria-describedby="passwordAgainErrors"
               aria-invalid={passwordAgainErrors.length > 0}
             />
           </div>
           <FormErrors
             errors={passwordAgainErrors}
-            id="password-again-errors"
+            id="passwordAgainErrors"
+            data-testid="passwordAgainErrors"
           />
         </div>
         <div className="mt-2">
           <div className="flex items-center">
             <Checkbox
-              id="accept-terms"
-              name="accept-terms"
-              aria-describedby="terms-errors"
+              id="acceptTerms"
+              name="acceptTerms"
+              data-testid="acceptTerms"
+              aria-describedby="termsErrors"
               onChange={controller.onChangeTerms}
               checked={form.terms}
               aria-invalid={termsErrors.length > 0}
             />
             <Label
               className="ml-3"
-              htmlFor="accept-terms"
+              htmlFor="acceptTerms"
               aria-invalid={termsErrors.length > 0}
             >
               <span>I have read and accept the </span>
@@ -114,7 +120,8 @@ export default function SignUpForm() {
           </div>
           <FormErrors
             errors={termsErrors}
-            id="terms-errors"
+            id="termsErrors"
+            data-testid="termsErrors"
           />
         </div>
         <div>
@@ -122,16 +129,11 @@ export default function SignUpForm() {
             type="submit"
             className="w-full"
             disabled={!state.editable || state.errors.length > 0}
+            data-testid="submitButton"
           >
             Sign up
           </PrimaryButton>
         </div>
       </form>
-      <p className="mt-10 text-center text-sm text-gray-500">
-        <FormLink href="/login">
-          Already have an account? Log in instead.
-        </FormLink>
-      </p>
-    </FormWrapper>
   );
 }

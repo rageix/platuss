@@ -3,7 +3,6 @@ import { Props as ConfirmationDialogProps } from '../components/confirmationDial
 
 export enum emitterMessage {
   notificationError = 'notificationError',
-  currentUserUpdated = 'currentUserUpdated',
   showConfirmationDialog = 'showConfirmationDialog',
 }
 
@@ -16,11 +15,6 @@ export class Emitter {
 
   off = (message: emitterMessage, fn: (...args: unknown[]) => void) => {
     this.emitter.off(message, fn);
-  };
-
-  emitCurrentUserUpdated = () => {
-    console.log('emit current user updated');
-    this.emitter.emit(emitterMessage.currentUserUpdated);
   };
 
   emitNotificationError = (arg: string) => {

@@ -1,11 +1,11 @@
-import log from '../log/logger';
+import log from './logger';
 import {
   BackendResponse,
   ResponseError,
   ResponseType,
 } from './backendResponse';
-import { PaginatedResults, Pagination } from '../pagination';
-import { SelectOption } from '../selectOptions';
+import { PaginatedResults, Pagination } from './pagination';
+import { SelectOption } from './selectOptions';
 import { ValidationResult } from 'joi';
 import { NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';

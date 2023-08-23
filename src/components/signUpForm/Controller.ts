@@ -49,7 +49,7 @@ export default class Controller extends FormController<Form> {
     );
 
     if (response.type === ResponseType.Ok) {
-      window.location.href = '/';
+      this.router.push('/');
     }
   };
 

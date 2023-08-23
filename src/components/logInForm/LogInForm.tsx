@@ -10,7 +10,6 @@ import Label from '../label/Label';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import FormLabel from '@/components/formLabel/FormLabel';
-import FormWrapper from "@/components/wrappers/FormWrapper";
 
 let controller = new Controller();
 
@@ -23,104 +22,97 @@ export default function LogInForm() {
   const passwordErrors = formErrorsByPath(state, 'password');
 
   useEffect(() => {
-    console.log('call reset');
     controller.reset();
   }, [path]);
 
   return (
-    <FormWrapper h2="Log in to your account">
-      <form
-        className="space-y-6"
-        onSubmit={controller.onSubmitForm}
-      >
-        <div>
-          <FormLabel
-            htmlFor="email"
-            className="block"
-          >
-            Email address
-          </FormLabel>
-          <div className="mt-2">
-            <Input
-              id="email"
-              name="email"
-              type="text"
-              autoComplete="email"
-              onChange={controller.onChangeEmail}
-              value={form.email}
-              aria-describedby="email-errors"
-              aria-invalid={emailErrors.length > 0}
-            />
-          </div>
-          <FormErrors
-            errors={emailErrors}
-            id="email-errors"
+    <form
+      data-testid="loginForm"
+      className="space-y-6"
+      onSubmit={controller.onSubmitForm}
+    >
+      <div>
+        <FormLabel
+          htmlFor="email"
+          className="block"
+        >
+          Email address
+        </FormLabel>
+        <div className="mt-2">
+          <Input
+            id="email"
+            data-testid="email"
+            name="email"
+            type="text"
+            autoComplete="email"
+            onChange={controller.onChangeEmail}
+            value={form.email}
+            aria-describedby="email-errors"
+            aria-invalid={emailErrors.length > 0}
           />
         </div>
-        <div>
-          <div className="flex items-center justify-between">
-            <FormLabel
-              htmlFor="password"
-              className="block"
-            >
-              Password
-            </FormLabel>
-          </div>
-          <div className="mt-2">
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              onChange={controller.onChangePassword}
-              value={form.password}
-              aria-describedby="password-errors"
-              aria-invalid={passwordErrors.length > 0}
-            />
-            <FormErrors
-              errors={passwordErrors}
-              id="password-errors"
-            />
-          </div>
-        </div>
+        <FormErrors
+          errors={emailErrors}
+          id="email-errors"
+        />
+      </div>
+      <div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Checkbox
-              id="remember-me"
-              name="remember-me"
-              onChange={controller.onChangeRememberMe}
-              checked={form.rememberMe}
-            />
-            <Label
-              className="ml-3"
-              htmlFor="remember-me"
-            >
-              Remember me
-            </Label>
-          </div>
-          <div className="text-sm leading-6">
-            <FormLink href="/passwordReset">Forgot password?</FormLink>
-          </div>
-        </div>
-        <div>
-          <PrimaryButton
-            type="submit"
-            className="w-full"
-            disabled={!state.editable || state.errors.length > 0}
+          <FormLabel
+            htmlFor="password"
+            className="block"
           >
-            Sign in
-          </PrimaryButton>
+            Password
+          </FormLabel>
         </div>
-      </form>
-
-      <p className="mt-10 text-center text-sm text-gray-500">
-        <FormLink
-          href="/signup"
-          className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+        <div className="mt-2">
+          <Input
+            id="password"
+            data-testid="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            onChange={controller.onChangePassword}
+            value={form.password}
+            aria-describedby="password-errors"
+            aria-invalid={passwordErrors.length > 0}
+          />
+          <FormErrors
+            errors={passwordErrors}
+            id="password-errors"
+          />
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <Checkbox
+            id="rememberMe"
+            data-testid="rememberMe"
+            name="rememberMe"
+            onChange={controller.onChangeRememberMe}
+            checked={form.rememberMe}
+          />
+          <Label
+            className="ml-3"
+            htmlFor="rememberMe"
+          >
+            Remember me
+          </Label>
+        </div>
+        <div className="text-sm leading-6">
+          <FormLink href="/passwordReset">Forgot password?</FormLink>
+        </div>
+      </div>
+      <div>
+        <PrimaryButton
+          data-testid="submitButton"
+          type="submit"
+          className="w-full"
+          disabled={!state.editable || state.errors.length > 0}
         >
-          Not a member? Sign up instead.
-        </FormLink>
-      </p>
-    </FormWrapper>
+          Sign in
+        </PrimaryButton>
+      </div>
+    </form>
   );
 }

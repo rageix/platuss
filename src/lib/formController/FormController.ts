@@ -1,8 +1,4 @@
-import emitter, { emitterMessage } from '../emitter';
-// import unsavedStore, {
-//   Unsaved,
-// } from '@/stores/unsavedStore/unsavedStore';
-import { FormState, newFormState } from './state';
+import { FormState, newFormState } from './FormState';
 import { ComponentController } from '../componentController';
 import { ObjectSchema } from 'joi';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -36,20 +32,6 @@ export default class FormController<T> extends ComponentController<FormState> {
 
   setForm = (form: T) => {
     this.updateForm(form);
-  };
-
-  setup = () => {
-    emitter.on(
-      emitterMessage.currentUserUpdated,
-      this.onEventCurrentUserUpdated,
-    );
-  };
-
-  teardown = () => {
-    emitter.off(
-      emitterMessage.currentUserUpdated,
-      this.onEventCurrentUserUpdated,
-    );
   };
 
   /**
@@ -123,8 +105,6 @@ export default class FormController<T> extends ComponentController<FormState> {
    * @returns {boolean}
    */
   onValidateForm = (form: T): boolean => {
-
-    console.log(form);
 
     const result = this.formSchema.validate(form, {
       abortEarly: false,

@@ -1,6 +1,6 @@
 import db from '@/lib/db';
 import { JoiSettings } from '@/lib/joi';
-import respond from '@/lib/response/respond';
+import respond from '@/lib/respond';
 import Joi from 'joi';
 import argon2 from 'argon2';
 import { NextRequest } from 'next/server';

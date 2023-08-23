@@ -1,16 +1,19 @@
 import logo from './logo.svg';
 import Image from 'next/image';
+import { classNames } from "@/lib/lib";
 
 interface Props {
-  className: string,
+  className?: string,
 }
 
 export default function Logo(props: Props) {
   return (
-    <Image
-      {...props}
-      src={logo}
-      alt="platuss"
-    />
+    <div className={classNames("relative", props.className)}>
+      <Image
+        src={logo}
+        alt="platuss"
+        fill={true}
+      />
+    </div>
   );
 }

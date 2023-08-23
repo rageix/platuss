@@ -49,7 +49,7 @@ export default function Header(props: Props) {
             className="-m-1.5 p-1.5"
           >
             <span className="sr-only">platuss</span>
-            <Logo className="h-8 w-auto" />
+            <Logo className="h-8 w-8"/>
           </Link>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
@@ -118,7 +118,7 @@ export default function Header(props: Props) {
               className="-m-1.5 p-1.5"
             >
               <span className="sr-only">platuss</span>
-              <Logo className="h-8 w-auto" />
+              <Logo className="h-8 w-8" />
             </Link>
             <Link
               href="/signup"

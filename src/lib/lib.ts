@@ -1,4 +1,4 @@
-import { FormState } from "./formController/state";
+import { FormState } from "./formController/FormState";
 import { ValidationErrorItem } from "joi";
 
 /**

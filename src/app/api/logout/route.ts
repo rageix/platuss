@@ -1,4 +1,4 @@
-import respond from '@/lib/response/respond';
+import respond from '@/lib/respond';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {

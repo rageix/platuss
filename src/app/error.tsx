@@ -1,7 +1,7 @@
 'use client'; // Error components must be Client Components
 
 import { useEffect } from 'react';
-import log from '@/lib/log/logger';
+import log from '@/lib/logger';
 import Link from 'next/link';
 
 interface Props {

@@ -6,6 +6,8 @@ import Joi from 'joi';
 import { uuidValidator } from '@/lib/validators';
 import PasswordResetIdForm
   from "@/components/passwordResetIdForm/PasswordResetIdForm";
+import FormWrapper from "@/components/wrappers/FormWrapper";
+
 export const metadata: Metadata = {
   title: 'Password reset',
 };
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
 interface Params {
   id: string;
 }
+
 interface Props {
   params: Params
 }
@@ -34,12 +37,14 @@ export default async function Page(props: Props) {
       where: {id: result.value.id, expires: {gt: new Date()}}
     });
 
-    if(!reset) {
+    if (!reset) {
       return redirect('/');
     }
 
     return (
-      <PasswordResetIdForm/>
+      <FormWrapper h2="Enter your new password below">
+        <PasswordResetIdForm/>
+      </FormWrapper>
     )
 
   } catch (error) {

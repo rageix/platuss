@@ -12,7 +12,7 @@ export default function FormWrapper(props: Props) {
       className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Logo
-          className="mx-auto h-10 w-auto"
+          className="h-10 w-10 mx-auto"
         />
         <h2
           className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

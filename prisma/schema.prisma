@@ -18,11 +18,15 @@ model Users {
   firstName     String?
   lastName      String?
   image         String?
+  units         String          @default("USD")
   createdAt     DateTime        @db.Timestamptz()
   updatedAt     DateTime        @db.Timestamptz()
   password      Passwords?
   verifyEmail   VerifyEmail[]
   passwordReset PasswordReset[]
+  accounts      Accounts[]
+  budgets       Budgets[]
+  cateogories   Categories[]
 }
 
 model Passwords {
@@ -39,8 +43,72 @@ model VerifyEmail {
 }
 
 model PasswordReset {
-  id      String   @id @default(uuid())
-  userId  String
-  user    Users    @relation(fields: [userId], references: [id])
-  expires DateTime @db.Timestamptz()
+  id        String   @id @default(uuid())
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id])
+  expiresAt DateTime @db.Timestamptz()
+}
+
+model Accounts {
+  id           String         @id @default(uuid())
+  userId       String
+  user         Users          @relation(fields: [userId], references: [id])
+  createdAt    DateTime       @db.Timestamptz()
+  updatedAt    DateTime       @db.Timestamptz()
+  type         String
+  balance      BigInt
+  transactions Transactions[]
+}
+
+model Transactions {
+  id              String            @id @default(uuid())
+  accountId       String            @default(uuid())
+  account         Accounts          @relation(fields: [accountId], references: [id])
+  type            String
+  date            DateTime          @db.Timestamptz()
+  amount          BigInt
+  createdAt       DateTime          @db.Timestamptz()
+  updatedAt       DateTime          @db.Timestamptz()
+  subTransactions SubTransactions[]
+}
+
+model SubTransactions {
+  id            String       @id @default(uuid())
+  transactionId String       @default(uuid())
+  transaction   Transactions @relation(fields: [transactionId], references: [id])
+  budgetsId     String
+  budget        Budgets      @relation(fields: [budgetsId], references: [id])
+  createdAt     DateTime     @db.Timestamptz()
+  updatedAt     DateTime     @db.Timestamptz()
+  amount        BigInt
+  categories    Categories[]
+}
+
+model Budgets {
+  id              String            @id @default(uuid())
+  userId          String
+  user            Users             @relation(fields: [userId], references: [id])
+  createdAt       DateTime          @db.Timestamptz()
+  updatedAt       DateTime          @db.Timestamptz()
+  name            String
+  color           String
+  categories      Categories[]
+  amount          BigInt
+  timeframe       String
+  timeframeAmount Int
+  starts          DateTime          @db.Timestamptz()
+  ends            DateTime          @db.Timestamptz()
+  SubTransactions SubTransactions[]
+}
+
+model Categories {
+  id              String            @id @default(uuid())
+  userId          String
+  user            Users             @relation(fields: [userId], references: [id])
+  name            String
+  color           String
+  createdAt       DateTime          @db.Timestamptz()
+  updatedAt       DateTime          @db.Timestamptz()
+  budgets         Budgets[]
+  subTransactions SubTransactions[]
 }

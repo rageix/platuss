@@ -1,6 +1,6 @@
 import db from '@/lib/db';
 import { JoiSettings } from '@/lib/joi';
-import respond from '@/lib/response/respond';
+import respond from '@/lib/respond';
 import Joi from 'joi';
 import { NextRequest } from 'next/server';
 import { passwordValidator, uuidValidator } from "@/lib/validators";
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     const reset = await db.passwordReset.findUnique({
-      where: {id: result.value.id, expires: {gt: new Date()}}
+      where: {id: result.value.id, expiresAt: {gt: new Date()}}
     });
 
     if (!reset) {

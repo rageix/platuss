@@ -8,12 +8,16 @@ import {
 import { describe, expect, it } from 'vitest';
 import emitter from '@/lib/emitter';
 import Notifications from "./Notifications";
-describe('search box', () => {
+import QueryWrapper from "../../../__tests__/QueryWrapper";
+
+describe('<Notifications />', () => {
   it('works correctly', async () => {
-    render(<Notifications />);
+    render(<QueryWrapper>
+      <Notifications/>
+    </QueryWrapper>);
 
     const notifications =
-      screen.getByLabelText<HTMLInputElement>('notifications');
+      screen.getByTestId<HTMLInputElement>('notificationArea');
 
     expect(notifications.querySelectorAll('.error')).toHaveLength(0);
 
