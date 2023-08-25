@@ -32,10 +32,10 @@ export default class Controller extends FormController<Form> {
     const response = await postData<Form, never>('/api/login', this.form);
 
     if (response.type === ResponseType.Ok) {
-      await this.queryClient.invalidateQueries({
-        queryKey: ['/api/currentUser'],
-      });
-      this.router.push('/');
+      // await this.queryClient.invalidateQueries({
+      //   queryKey: ['/api/currentUser'],
+      // });
+      this.router.push('/dashboard');
     }
   };
 

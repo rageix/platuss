@@ -3,11 +3,9 @@ import type { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
 import Notifications from '@/components/notifications/Notifications';
 import { headers } from 'next/headers';
-import HeaderWrapper from '@/components/header/HeaderWrapper';
 import Providers from '@/lib/providers';
-import Footer from '@/components/footer/Footer';
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata() : Promise<Metadata> {
   const csrfToken = headers().get('X-CSRF-Token') || 'missing';
 
   return {
@@ -35,9 +33,7 @@ export default function RootLayout(props: Props) {
       <body className="bg-white">
         <div className="flex flex-col h-screen">
           <Providers>
-            <HeaderWrapper />
-            <div className="flex-grow">{props.children}</div>
-            <Footer />
+            {props.children}
             <Notifications />
           </Providers>
         </div>

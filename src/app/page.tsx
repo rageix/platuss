@@ -1,6 +1,9 @@
+import HeaderFooterLayout from "@/components/layouts/HeaderFooterLayout";
 
 export default function Home() {
   return (
-    <div>This is the index</div>
+    <HeaderFooterLayout>
+      <div>This is the index</div>
+    </HeaderFooterLayout>
   )
 }

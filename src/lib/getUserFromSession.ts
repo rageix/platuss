@@ -1,5 +1,5 @@
 import db from './db';
-import { User } from '@/lib/user';
+import { User } from '@/types/user';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { getSession } from '@/lib/getSession';
 import { RequestCookies } from "next/dist/server/web/spec-extension/cookies";

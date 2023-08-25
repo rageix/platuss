@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return (await redirectIfLoggedIn('/')) ||
+  return await redirectIfLoggedIn('/') ||
     <FormWrapper h2="Log in to your account">
       <LogInForm/>
       <p className="mt-10 text-center text-sm text-gray-500">
