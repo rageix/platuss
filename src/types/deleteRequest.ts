@@ -1,18 +1,7 @@
-import Joi, { ValidationResult } from "joi";
-import { uuidValidator } from "@/lib/validators";
-import { JoiSettings } from "@/lib/joi";
+import z from 'zod';
 
-export interface DeleteRequest {
-  ids: string[],
-}
-
-const deleteSchema = Joi.object<DeleteRequest>({
-  ids: Joi.array().items(uuidValidator).required(),
+export const deleteSchema = z.object({
+  ids: z.string().array(),
 });
 
-export function validateDelete(arg: any): ValidationResult<DeleteRequest> {
-
-  return deleteSchema.validate(arg, JoiSettings);
-
-}
-
+export type DeleteReq = z.infer<typeof deleteSchema>;

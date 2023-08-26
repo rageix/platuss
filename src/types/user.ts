@@ -1,11 +1,11 @@
 export interface User {
-  id: string,
-  active: boolean,
-  email: string,
-  emailVerified: boolean,
-  firstName: string,
-  lastName: string,
-  image: string,
-  created?: Date,
-  updated?: Date
+  id: string;
+  active: boolean;
+  email: string;
+  emailVerified: boolean;
+  firstName: string | null;
+  lastName: string | null;
+  image: string | null;
+  created?: Date;
+  updated?: Date;
 }

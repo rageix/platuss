@@ -1,16 +1,17 @@
-import { ValidationErrorItem } from 'joi';
+import { ZodIssue } from 'zod';
 
 interface Props {
-  errors: ValidationErrorItem[];
+  errors: ZodIssue[];
   id?: string;
-  "data-testid"?: string,
+  'data-testid'?: string;
 }
 
 export default function FormErrors(props: Props) {
-
   return (
-    <div id={props.id}
-    data-testid={props["data-testid"]}>
+    <div
+      id={props.id}
+      data-testid={props['data-testid']}
+    >
       {props.errors.map((v, i) => (
         <p
           key={i}

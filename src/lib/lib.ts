@@ -1,11 +1,11 @@
-import { FormState } from "./formController/FormState";
-import { ValidationErrorItem } from "joi";
+import { FormState } from './formController/FormState';
+import { ZodIssue } from 'zod';
 
 /**
  * Joins multiple classes together into one string.
  * @param classes - classes to join
  */
-export function classNames(...classes: string[]): string {
+export function classNames(...classes: (string | null | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
@@ -22,9 +22,6 @@ export function isBlank(arg: string): boolean {
  * @param state
  * @param path
  */
-export function formErrorsByPath(
-  state: FormState,
-  path: string,
-): ValidationErrorItem[] {
+export function formErrorsByPath(state: FormState, path: string): ZodIssue[] {
   return state.errors.filter((v) => v.path.indexOf(path) > -1);
 }

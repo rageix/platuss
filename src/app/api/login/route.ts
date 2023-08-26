@@ -1,39 +1,33 @@
 import db from '@/lib/db';
-import { JoiSettings } from '@/lib/joi';
 import respond from '@/lib/respond';
-import Joi from 'joi';
 import argon2 from 'argon2';
 import { NextRequest } from 'next/server';
 import { getSession } from '@/lib/getSession';
 import { setSession } from '@/lib/setSession';
+import { z } from 'zod';
 
 const invalidCredentials = 'Invalid credentials.';
 
-interface PostRequest {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-const postSchema = Joi.object<PostRequest>({
-  email: Joi.string()
-    .trim()
-    .email({ tlds: { allow: false } })
-    .required(),
-  password: Joi.string().trim().alphanum().min(1).required(),
-  rememberMe: Joi.boolean().optional().default(true),
+const postSchema = z.object({
+  email: z.string().trim().email(),
+  password: z.string().trim().min(1),
+  rememberMe: z.boolean().optional().default(true),
 });
+
+export type ApiLoginPost = z.infer<typeof postSchema>;
 
 export async function POST(req: NextRequest) {
   try {
-    const result = postSchema.validate(await req.json(), JoiSettings);
+    const result = postSchema.safeParse(await req.json());
 
-    if (result.error) {
-      return respond.withValidationErrors(result);
+    if (!result.success) {
+      return respond.withValidationErrors(result.error);
     }
 
+    const { data } = result;
+
     const user = await db.users.findUnique({
-      where: { email: result.value.email },
+      where: { email: data.email },
       include: {
         password: true,
       },
@@ -50,15 +44,15 @@ export async function POST(req: NextRequest) {
     }
 
     const match = await argon2.verify(
-      user.password.hash,
-      result.value.password,
+      user.password?.hash as string,
+      data.password,
     );
 
     if (!match) {
       return respond.withErrors([invalidCredentials]);
     }
 
-    const maxAge = !result.value.rememberMe ? 2592000 : null;
+    const maxAge = !data.rememberMe ? 2592000 : undefined;
 
     let session = getSession(req.cookies);
 

@@ -1,20 +1,19 @@
 import { FormState, newFormState } from './FormState';
 import { ComponentController } from '../componentController';
-import { ObjectSchema } from 'joi';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { useParams, useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
+import { z, ZodEffects, ZodObject } from 'zod';
 
 export default class FormController<T> extends ComponentController<FormState> {
   defaultState = newFormState();
-  // unsavedData: Unsaved;
-  form: T;
-  defaultForm: T;
-  updateForm: Dispatch<SetStateAction<T>>;
-  formSchema: ObjectSchema<T>;
+  form: T = null as any;
+  defaultForm: T = null as any;
+  updateForm: Dispatch<SetStateAction<T>> = null as any;
+  formSchema: ZodEffects<ZodObject<any>> | ZodObject<any> = z.object({});
   submit = false;
-  params: Params;
+  params: Params | undefined;
 
   onRender = () => {
     [this.state, this.updateState] = useState<FormState>(this.defaultState);
@@ -28,7 +27,7 @@ export default class FormController<T> extends ComponentController<FormState> {
     this.submit = false;
     this.updateState(this.defaultState);
     this.updateForm(this.defaultForm);
-  }
+  };
 
   setForm = (form: T) => {
     this.updateForm(form);
@@ -72,9 +71,9 @@ export default class FormController<T> extends ComponentController<FormState> {
   /**
    * Call when you want to submit a form.
    *
-   * @param {React.FormEvent<HTMLFormElement>} event
+   * @param {FormEvent<HTMLFormElement>} event
    */
-  onSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
+  onSubmitForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     this.onClickSubmit();
   };
@@ -104,20 +103,13 @@ export default class FormController<T> extends ComponentController<FormState> {
    *
    * @returns {boolean}
    */
-  onValidateForm = (form: T): boolean => {
-
-    const result = this.formSchema.validate(form, {
-      abortEarly: false,
-      allowUnknown: true,
-      // errors: {
-      //   label: false,
-      // },
-    });
+  onValidateForm = (form: T | undefined): boolean => {
+    const result = this.formSchema.safeParse(form);
 
     const state: FormState = { ...this.state };
 
-    if (result.error) {
-      state.errors = result.error.details;
+    if (!result.success) {
+      state.errors = result.error.issues;
     } else {
       state.errors = [];
     }

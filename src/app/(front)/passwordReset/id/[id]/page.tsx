@@ -1,40 +1,38 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { JoiSettings } from '@/lib/joi';
 import db from '@/lib/db';
-import Joi from 'joi';
-import { uuidValidator } from '@/lib/validators';
-import PasswordResetIdForm
-  from "@/components/passwordResetIdForm/PasswordResetIdForm";
-import FormWrapper from "@/components/wrappers/FormWrapper";
+import PasswordResetIdForm from '@/components/passwordResetIdForm/PasswordResetIdForm';
+import FormWrapper from '@/components/wrappers/FormWrapper';
+import { z } from 'zod';
 
 export const metadata: Metadata = {
   title: 'Password reset',
 };
-
 
 interface Params {
   id: string;
 }
 
 interface Props {
-  params: Params
+  params: Params;
 }
 
-const getSchema = Joi.object<Params>({
-  id: uuidValidator.required(),
+const paramsSchema = z.object({
+  id: z.string().uuid(),
 });
 
 export default async function Page(props: Props) {
   try {
-    const result = getSchema.validate(props.params, JoiSettings);
+    const result = paramsSchema.safeParse(props.params);
 
-    if (result.error) {
+    if (!result.success) {
       return redirect('/');
     }
 
+    const { data } = result;
+
     const reset = await db.passwordReset.findUnique({
-      where: {id: result.value.id, expires: {gt: new Date()}}
+      where: { id: data.id, expiresAt: { gt: new Date() } },
     });
 
     if (!reset) {
@@ -43,10 +41,9 @@ export default async function Page(props: Props) {
 
     return (
       <FormWrapper h2="Enter your new password below">
-        <PasswordResetIdForm/>
+        <PasswordResetIdForm />
       </FormWrapper>
-    )
-
+    );
   } catch (error) {
     throw error;
   }

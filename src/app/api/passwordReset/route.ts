@@ -1,30 +1,27 @@
 import db from '@/lib/db';
-import { JoiSettings } from '@/lib/joi';
 import respond from '@/lib/respond';
-import Joi from 'joi';
 import { NextRequest } from 'next/server';
 import moment from 'moment';
-interface PostRequest {
-  email: string;
-}
+import { z } from 'zod';
 
-const postSchema = Joi.object<PostRequest>({
-  email: Joi.string()
-    .trim()
-    .email({ tlds: { allow: false } })
-    .required(),
+const postSchema = z.object({
+  email: z.string().trim().email(),
 });
+
+export type ApiPasswordResetPost = z.infer<typeof postSchema>;
 
 export async function POST(req: NextRequest) {
   try {
-    const result = postSchema.validate(await req.json(), JoiSettings);
+    const result = postSchema.safeParse(await req.json());
 
-    if (result.error) {
-      return respond.withValidationErrors(result);
+    if (!result.success) {
+      return respond.withValidationErrors(result.error);
     }
 
+    const { data } = result;
+
     const user = await db.users.findUnique({
-      where: { email: result.value.email },
+      where: { email: data.email },
     });
 
     if (!user) {

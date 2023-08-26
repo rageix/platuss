@@ -3,12 +3,12 @@ import {
   BackendResponse,
   ResponseError,
   ResponseType,
-} from './backendResponse';
-import { PaginatedResults, Pagination } from './pagination';
+} from '@/types/backendResponse';
+import { PaginatedResults, Pagination } from '@/types/pagination';
 import { SelectOption } from './selectOptions';
-import { ValidationResult } from 'joi';
 import { NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
+import { ZodError, ZodIssue } from 'zod';
 
 export const defaultServerErrorResponse =
   "Your request failed. We've logged the error and will look " +
@@ -72,11 +72,11 @@ class Respond {
     });
   };
 
-  withValidationErrors = (result: ValidationResult): NextResponse => {
-    const responseData: BackendResponse<ValidationResult> = {
+  withValidationErrors = (error: ZodError): NextResponse => {
+    const responseData: BackendResponse<ZodIssue[]> = {
       type: ResponseType.Error,
       error: ResponseError.Validation,
-      data: result,
+      data: error.issues,
     };
 
     return NextResponse.json(responseData, {
@@ -193,7 +193,6 @@ class Respond {
       status: 500,
       headers: { 'X-Robots-Tag': 'noindex' },
     });
-
   };
 
   withInvalidRequestError = (): NextResponse => {

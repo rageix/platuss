@@ -1,23 +1,23 @@
-import { Menu, Transition } from "@headlessui/react";
-import Avatar from "@/components/avatar/Avatar";
-import React, { Fragment } from "react";
-import { classNames } from "@/lib/lib";
-import Link from "next/link";
-import { useQueryClient } from "@tanstack/react-query";
-import { User } from "@/types/user";
+import { Menu, Transition } from '@headlessui/react';
+import Avatar from '@/components/avatar/Avatar';
+import React, { Fragment } from 'react';
+import { classNames } from '@/lib/lib';
+import Link from 'next/link';
+import { useQueryClient } from '@tanstack/react-query';
+import { User } from '@/types/user';
 
 interface Navigation {
-  name: string,
-  href: string
+  name: string;
+  href: string;
 }
 
 const userNavigation: Navigation[] = [
-  {name: 'Dashboard', href: '/dashboard'},
-  {name: 'Your profile', href: '/dashboard/profile'},
-]
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Your profile', href: '/dashboard/profile' },
+];
 
 interface Props {
-  user?: User
+  user?: User | null;
 }
 
 export default function AvatarMenu(props: Props) {
@@ -33,10 +33,13 @@ export default function AvatarMenu(props: Props) {
   }
 
   return (
-    <Menu as="div" className="relative">
+    <Menu
+      as="div"
+      className="relative"
+    >
       <Menu.Button className="-m-1.5 flex items-center p-1.5">
         <span className="sr-only">Open user menu</span>
-        <Avatar user={props.user}/>
+        <Avatar user={props.user} />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -47,16 +50,15 @@ export default function AvatarMenu(props: Props) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items
-          className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
           {userNavigation.map((item) => (
             <Menu.Item key={item.name}>
-              {({active}) => (
+              {({ active }) => (
                 <Link
                   href={item.href}
                   className={classNames(
                     active ? 'bg-gray-50' : '',
-                    'block px-3 py-1 text-sm leading-6 text-gray-900'
+                    'block px-3 py-1 text-sm leading-6 text-gray-900',
                   )}
                 >
                   {item.name}
@@ -65,12 +67,12 @@ export default function AvatarMenu(props: Props) {
             </Menu.Item>
           ))}
           <Menu.Item>
-            {({active}) => (
+            {({ active }) => (
               <Link
                 href="#"
                 className={classNames(
                   active ? 'bg-gray-50' : '',
-                  'block px-3 py-1 text-sm leading-6 text-gray-900'
+                  'block px-3 py-1 text-sm leading-6 text-gray-900',
                 )}
                 onClick={logout}
               >
@@ -81,6 +83,5 @@ export default function AvatarMenu(props: Props) {
         </Menu.Items>
       </Transition>
     </Menu>
-  )
-
+  );
 }

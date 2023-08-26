@@ -3,9 +3,9 @@ import {
   BackendResponse,
   ResponseError,
   ResponseType,
-} from './backendResponse';
+} from '@/types/backendResponse';
 import emitter from './emitter';
-// import userStore from "../stores/userStore/UserStore";
+import _ from 'lodash';
 
 export function processResponse<T>(
   response: BackendResponse<T>,
@@ -33,7 +33,7 @@ export function processResponse<T>(
       }
       return response;
     case ResponseType.Redirect:
-      window.location.href = response.redirect;
+      window.location.href = _.toString(response.redirect);
       return response;
   }
 }
@@ -54,7 +54,7 @@ export async function getData<V>(
 
 export async function postData<T, V>(
   url = '',
-  data: T
+  data: T,
 ): Promise<BackendResponse<V>> {
   return await sendData<T, V>(url, 'POST', data);
 }
@@ -78,7 +78,9 @@ export async function sendData<T, V>(
   method: string,
   data: T,
 ): Promise<BackendResponse<V>> {
-  const el = document.querySelector('meta[name="x-csrf-token"]') as HTMLMetaElement | null;
+  const el = document.querySelector(
+    'meta[name="x-csrf-token"]',
+  ) as HTMLMetaElement | null;
   const rawResponse = await fetch(url, {
     method: method,
     headers: {

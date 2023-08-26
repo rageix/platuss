@@ -5,24 +5,23 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { User } from '@/types/user';
 import Logo from '@/components/logo/Logo';
-import { useUser } from "@/hooks/user";
-import AvatarMenu from "@/components/avatarMenu/AvatarMenu";
+import { useUser } from '@/hooks/user';
+import AvatarMenu from '@/components/avatarMenu/AvatarMenu';
 
 const navigation = [
-  {name: 'Product', href: '#'},
-  {name: 'Features', href: '#'},
-  {name: 'Marketplace', href: '#'},
-  {name: 'Company', href: '#'},
+  { name: 'Product', href: '#' },
+  { name: 'Features', href: '#' },
+  { name: 'Marketplace', href: '#' },
+  { name: 'Company', href: '#' },
 ];
 
 interface Props {
-  user: User;
+  user: User | null;
 }
 
 export default function Header(props: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const user = useUser(props.user);
-  console.log('user.data', user.data);
 
   return (
     <header className="bg-white">
@@ -36,7 +35,7 @@ export default function Header(props: Props) {
             className="-m-1.5 p-1.5"
           >
             <span className="sr-only">platuss</span>
-            <Logo className="h-8 w-8"/>
+            <Logo className="h-8 w-8" />
           </Link>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
@@ -67,7 +66,7 @@ export default function Header(props: Props) {
               </Link>
             </>
           ) : (
-            <AvatarMenu user={props.user}/>
+            <AvatarMenu user={props.user} />
           )}
         </div>
         <div className="flex lg:hidden">
@@ -90,26 +89,25 @@ export default function Header(props: Props) {
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
-        <div className="fixed inset-0 z-10"/>
-        <Dialog.Panel
-          className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div className="fixed inset-0 z-10" />
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center gap-x-6">
             <Link
               href="/"
               className="-m-1.5 p-1.5"
             >
               <span className="sr-only">platuss</span>
-              <Logo className="h-8 w-8"/>
+              <Logo className="h-8 w-8" />
             </Link>
             <div className="ml-auto">
-              {!user.data &&
+              {!user.data && (
                 <Link
                   href="/signup"
                   className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Sign up
                 </Link>
-              }
+              )}
             </div>
             <button
               type="button"

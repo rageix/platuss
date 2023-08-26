@@ -1,14 +1,14 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export class ComponentController<T> {
-  state: T;
-  updateState: Dispatch<SetStateAction<T>>;
-  defaultState: T;
-  router: AppRouterInstance;
-  queryClient: QueryClient;
+  state: T = null as any;
+  updateState: Dispatch<SetStateAction<T>> = null as any;
+  defaultState: T = null as any;
+  router: AppRouterInstance = null as any;
+  queryClient: QueryClient = null as any;
 
   onRender = () => {
     [this.state, this.updateState] = useState<T>(this.defaultState);
@@ -19,5 +19,4 @@ export class ComponentController<T> {
   setState = (state: T) => {
     this.updateState(state);
   };
-
 }

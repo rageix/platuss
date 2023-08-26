@@ -1,36 +1,37 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { JoiSettings } from '@/lib/joi';
 import db from '@/lib/db';
-import Joi from 'joi';
-import { uuidValidator } from '@/lib/validators';
 import log from '@/lib/logger';
+import { z } from 'zod';
+
 export const metadata: Metadata = {
   title: 'Verify Email',
 };
 
-
 interface Params {
   id: string;
 }
+
 interface Props {
-  params: Params
+  params: Params;
 }
 
-const getSchema = Joi.object<Params>({
-  id: uuidValidator.required(),
+const paramSchema = z.object({
+  id: z.string().uuid(),
 });
 
 export default async function Page(props: Props) {
   try {
-    const result = getSchema.validate(props.params, JoiSettings);
+    const result = paramSchema.safeParse(props.params);
 
-    if (result.error) {
+    if (!result.success) {
       return redirect('/');
     }
 
+    const { data } = result;
+
     const verifyEmail = await db.verifyEmail.findUnique({
-      where: { id: result.value.id },
+      where: { id: data.id },
     });
 
     if (!verifyEmail) {

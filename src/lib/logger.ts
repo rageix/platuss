@@ -15,7 +15,7 @@ interface Log {
   level: LogLevel;
   message: string;
   error: unknown;
-  data: object;
+  data: object | undefined;
 }
 
 // Log output format

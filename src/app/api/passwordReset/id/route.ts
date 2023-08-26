@@ -1,50 +1,47 @@
 import db from '@/lib/db';
-import { JoiSettings } from '@/lib/joi';
 import respond from '@/lib/respond';
-import Joi from 'joi';
 import { NextRequest } from 'next/server';
-import { passwordValidator, uuidValidator } from "@/lib/validators";
-import hashPassword from "@/lib/hashPassword";
+import hashPassword from '@/lib/hashPassword';
+import { z } from 'zod';
 
-interface PostRequest {
-  password: string;
-  id: string,
-}
-
-const postSchema = Joi.object<PostRequest>({
-  id: uuidValidator.required(),
-  password: passwordValidator.required(),
+const postSchema = z.object({
+  id: z.string().uuid(),
+  password: z.string(),
 });
+
+export type ApiPasswordResetIdPost = z.infer<typeof postSchema>;
 
 export async function POST(req: NextRequest) {
   try {
-    const result = postSchema.validate(await req.json(), JoiSettings);
+    const result = postSchema.safeParse(await req.json());
 
-    if (result.error) {
-      return respond.withValidationErrors(result);
+    if (!result.success) {
+      return respond.withValidationErrors(result.error);
     }
+
+    const { data } = result;
 
     const reset = await db.passwordReset.findUnique({
       where: {
-        id: result.value.id,
+        id: data.id,
         expiresAt: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!reset) {
       return respond.withErrors(['Invalid request.']);
     }
 
-    const hash = await hashPassword(result.value.password);
+    const hash = await hashPassword(data.password);
 
     const updatePassword = db.passwords.update({
-      where: {userId: reset.userId},
-      data: {hash: hash}
+      where: { userId: reset.userId },
+      data: { hash: hash },
     });
 
-    const deleteReset = db.passwordReset.delete({where: {id: reset.id}});
+    const deleteReset = db.passwordReset.delete({ where: { id: reset.id } });
 
     await db.$transaction([updatePassword, deleteReset]);
 
