@@ -103,6 +103,13 @@ class Respond {
     );
   };
 
+  withAuthenticationRequired = (): NextResponse => {
+    return this.withErrors(
+      ['Authentication is required.'],
+      ResponseError.Authentication,
+    );
+  };
+
   withRedirect = (path: string, status = 302): NextResponse => {
     return NextResponse.redirect(path, status);
   };

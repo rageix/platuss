@@ -26,7 +26,7 @@ model Users {
   passwordReset PasswordReset[]
   accounts      Accounts[]
   budgets       Budgets[]
-  cateogories   Categories[]
+  cateogories   Tags[]
   Transactions  Transactions[]
 }
 
@@ -89,7 +89,7 @@ model TransactionDetails {
   createdAt     DateTime     @db.Timestamptz()
   updatedAt     DateTime     @db.Timestamptz()
   amount        BigInt
-  categories    Categories[]
+  tags          Tags[]
 }
 
 model Budgets {
@@ -100,7 +100,7 @@ model Budgets {
   updatedAt          DateTime             @db.Timestamptz()
   name               String
   color              String
-  categories         Categories[]
+  tags               Tags[]
   amount             BigInt
   timeframe          String
   timeframeAmount    Int
@@ -109,7 +109,7 @@ model Budgets {
   transactionDetails TransactionDetails[]
 }
 
-model Categories {
+model Tags {
   id                 String               @id @default(uuid())
   userId             String
   user               Users                @relation(fields: [userId], references: [id])

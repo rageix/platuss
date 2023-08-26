@@ -25,7 +25,12 @@ export async function POST(req: NextRequest) {
     }
 
     const reset = await db.passwordReset.findUnique({
-      where: {id: result.value.id, expiresAt: {gt: new Date()}}
+      where: {
+        id: result.value.id,
+        expiresAt: {
+          gt: new Date()
+        }
+      }
     });
 
     if (!reset) {

@@ -1,7 +1,7 @@
 import { User } from "@/types/user";
 import { Account } from "@/types/account";
 import { Budget } from "@/types/budget";
-import { Category } from "@/types/category";
+import { Tag } from "@/types/tag";
 
 export interface TransactionDetail {
   id: string,
@@ -14,5 +14,5 @@ export interface TransactionDetail {
   createdAt: Date,
   updatedAt: Date,
   amount: number,
-  categories: Category[]
+  tag: Tag[]
 }

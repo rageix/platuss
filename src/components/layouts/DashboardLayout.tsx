@@ -3,39 +3,83 @@
 import { Fragment, PropsWithChildren, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
+  BanknotesIcon,
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
   ChartPieIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
   HomeIcon,
-  UsersIcon,
-  XMarkIcon,
+  RectangleStackIcon,
+  TagIcon,
+  WalletIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { classNames } from "@/lib/lib";
 import AvatarMenu from "@/components/avatarMenu/AvatarMenu";
 import { useUser } from "@/hooks/user";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-const navigation = [
+interface NavigatorionItem {
+  name: string;
+  href: string;
+  icon: any
+}
 
-
-  {name: 'Dashboard', href: '#', icon: HomeIcon, current: true},
-  {name: 'Team', href: '#', icon: UsersIcon, current: false},
-  {name: 'Projects', href: '#', icon: FolderIcon, current: false},
-  {name: 'Calendar', href: '#', icon: CalendarIcon, current: false},
-  {name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false},
-  {name: 'Reports', href: '#', icon: ChartPieIcon, current: false},
+const navigation: NavigatorionItem[] = [
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: HomeIcon
+  },
+  {
+    name: 'Accounts',
+    href: '/dashboard/accounts',
+    icon: WalletIcon
+  },
+  {
+    name: 'Budgets',
+    href: '/dashboard/budgets',
+    icon: RectangleStackIcon
+  },
+  {
+    name: 'Transactions',
+    href: '/dashboard/transactions',
+    icon: BanknotesIcon
+  },
+  {
+    name: 'Tags',
+    href: '/dashboard/tags',
+    icon: TagIcon
+  },
+  {
+    name: 'Reports',
+    href: '/dashboard/reports',
+    icon: ChartPieIcon
+  },
 ]
+
 const teams = [
-
-
-  {id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false},
-  {id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false},
-  {id: 3, name: 'Workcation', href: '#', initial: 'W', current: false},
+  {
+    id: 1, name: 'Heroicons',
+    href: '#',
+    initial: 'H',
+    current: false
+  },
+  {
+    id: 2,
+    name: 'Tailwind Labs',
+    href: '#',
+    initial: 'T',
+    current: false
+  },
+  {
+    id: 3,
+    name: 'Workcation',
+    href: '#',
+    initial: 'W',
+    current: false
+  },
 ]
 
 
@@ -46,6 +90,7 @@ export default function DashboardLayout(props: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useUser();
   const router = useRouter();
+  const path = usePathname()
 
   useEffect(() => {
 
@@ -131,7 +176,7 @@ export default function DashboardLayout(props: Props) {
                                 <a
                                   href={item.href}
                                   className={classNames(
-                                    item.current
+                                    item.href === path
                                       ? 'bg-indigo-700 text-white'
                                       : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
@@ -139,7 +184,7 @@ export default function DashboardLayout(props: Props) {
                                 >
                                   <item.icon
                                     className={classNames(
-                                      item.current ? 'text-white' : 'text-indigo-200 group-hover:text-white',
+                                      item.href === path ? 'text-white' : 'text-indigo-200 group-hover:text-white',
                                       'h-6 w-6 shrink-0'
                                     )}
                                     aria-hidden="true"
@@ -220,7 +265,7 @@ export default function DashboardLayout(props: Props) {
                         <a
                           href={item.href}
                           className={classNames(
-                            item.current
+                            item.href === path
                               ? 'bg-indigo-700 text-white'
                               : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
@@ -228,7 +273,7 @@ export default function DashboardLayout(props: Props) {
                         >
                           <item.icon
                             className={classNames(
-                              item.current ? 'text-white' : 'text-indigo-200 group-hover:text-white',
+                              item.href === path ? 'text-white' : 'text-indigo-200 group-hover:text-white',
                               'h-6 w-6 shrink-0'
                             )}
                             aria-hidden="true"

@@ -9,14 +9,3 @@ export interface User {
   created?: Date,
   updated?: Date
 }
-
-/**
- * Determines if a user is active
- * @param user
- * @return boolean
- */
-export function userIsActive(user: User): boolean {
-
-  return user?.active;
-
-}

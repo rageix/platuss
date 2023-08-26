@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import { Category } from "@/types/category";
+import { Tag } from "@/types/tag";
 import { TransactionDetail } from "@/types/transactionDetails";
 
 export enum Timeframe {
@@ -17,7 +17,7 @@ export interface Budget {
   updatedAt: Date,
   name: string,
   color: string,
-  categories: Category[],
+  categories: Tag[],
   amount: number,
   timeframe: Timeframe,
   timeframeAmount: number,

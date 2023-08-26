@@ -8,5 +8,4 @@ export function useUser(user?: User) {
     queryFn: getCurrentUser,
     initialData: user,
   });
-
 }

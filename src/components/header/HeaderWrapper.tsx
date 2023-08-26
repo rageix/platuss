@@ -11,6 +11,6 @@ export default async function HeaderWrapper() {
   const user = await getCurrentUser();
 
   return (
-    <Header defaultUser={user}/>
+    <Header user={user}/>
   );
 }

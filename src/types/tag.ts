@@ -2,7 +2,7 @@ import { User } from "@/types/user";
 import { Budget } from "@/types/budget";
 import { TransactionDetail } from "@/types/transactionDetails";
 
-export interface Category {
+export interface Tag {
   id: string,
   userId: string,
   user?: User,
@@ -10,6 +10,6 @@ export interface Category {
   color: string,
   createdAt: Date,
   updatedAt: Date,
-  budgets: Budget[],
+  budgets?: Budget[],
   transactionDetails?: TransactionDetail[]
 }

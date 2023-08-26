@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     await db.passwordReset.create({
       data: {
         userId: user.id,
-        expires: moment().add(1, 'hour').toDate(),
+        expiresAt: moment().add(1, 'hour').toDate(),
       },
     });
 
