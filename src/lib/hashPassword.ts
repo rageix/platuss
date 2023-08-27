@@ -1,4 +1,4 @@
-import argon2 from "argon2";
+import argon2 from 'argon2';
 
 /**
  * Hashes a password

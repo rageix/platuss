@@ -1,5 +1,5 @@
-import { getUserFromSession } from "@/lib/getUserFromSession";
-import { cookies } from "next/headers";
+import { getUserFromSession } from '@/lib/getUserFromSession';
+import { cookies } from 'next/headers';
 
 /**
  * Returns if a user is logged in;

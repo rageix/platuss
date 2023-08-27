@@ -1,7 +1,7 @@
 'use client';
 
-import { Fragment, PropsWithChildren, useEffect, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Fragment, PropsWithChildren, useEffect, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import {
   BanknotesIcon,
   Bars3Icon,
@@ -12,92 +12,89 @@ import {
   RectangleStackIcon,
   TagIcon,
   WalletIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { classNames } from "@/lib/lib";
-import AvatarMenu from "@/components/avatarMenu/AvatarMenu";
-import { useUser } from "@/hooks/user";
-import { usePathname, useRouter } from "next/navigation";
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { classNames } from '@/lib/lib';
+import AvatarMenu from '@/components/avatarMenu/AvatarMenu';
+import { useUser } from '@/hooks/user';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface NavigatorionItem {
   name: string;
   href: string;
-  icon: any
+  icon: any;
 }
 
 const navigation: NavigatorionItem[] = [
   {
     name: 'Dashboard',
     href: '/dashboard',
-    icon: HomeIcon
+    icon: HomeIcon,
   },
   {
     name: 'Accounts',
     href: '/dashboard/accounts',
-    icon: WalletIcon
+    icon: WalletIcon,
   },
   {
     name: 'Budgets',
     href: '/dashboard/budgets',
-    icon: RectangleStackIcon
+    icon: RectangleStackIcon,
   },
   {
     name: 'Transactions',
     href: '/dashboard/transactions',
-    icon: BanknotesIcon
+    icon: BanknotesIcon,
   },
   {
     name: 'Tags',
     href: '/dashboard/tags',
-    icon: TagIcon
+    icon: TagIcon,
   },
   {
     name: 'Reports',
     href: '/dashboard/reports',
-    icon: ChartPieIcon
+    icon: ChartPieIcon,
   },
-]
+];
 
 const teams = [
   {
-    id: 1, name: 'Heroicons',
+    id: 1,
+    name: 'Heroicons',
     href: '#',
     initial: 'H',
-    current: false
+    current: false,
   },
   {
     id: 2,
     name: 'Tailwind Labs',
     href: '#',
     initial: 'T',
-    current: false
+    current: false,
   },
   {
     id: 3,
     name: 'Workcation',
     href: '#',
     initial: 'W',
-    current: false
+    current: false,
   },
-]
+];
 
-
-interface Props extends PropsWithChildren {
-}
+interface Props extends PropsWithChildren {}
 
 export default function DashboardLayout(props: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useUser();
   const router = useRouter();
-  const path = usePathname()
+  const path = usePathname();
 
   useEffect(() => {
-
     if (!user.isLoading && !user.isFetching && !user.data) {
       router.push('/');
     }
-
   }, [user.data]);
 
   return (
@@ -111,9 +108,15 @@ export default function DashboardLayout(props: Props) {
         ```
       */}
       <div>
-        <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-50 lg:hidden"
-                  onClose={setSidebarOpen}>
+        <Transition.Root
+          show={sidebarOpen}
+          as={Fragment}
+        >
+          <Dialog
+            as="div"
+            className="relative z-50 lg:hidden"
+            onClose={setSidebarOpen}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -123,7 +126,7 @@ export default function DashboardLayout(props: Props) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="fixed inset-0 bg-gray-900/80"/>
+              <div className="fixed inset-0 bg-gray-900/80" />
             </Transition.Child>
 
             <div className="fixed inset-0 flex">
@@ -136,8 +139,7 @@ export default function DashboardLayout(props: Props) {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel
-                  className="relative mr-16 flex w-full max-w-xs flex-1">
+                <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
                   <Transition.Child
                     as={Fragment}
                     enter="ease-in-out duration-300"
@@ -147,19 +149,22 @@ export default function DashboardLayout(props: Props) {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div
-                      className="absolute left-full top-0 flex w-16 justify-center pt-5">
-                      <button type="button" className="-m-2.5 p-2.5"
-                              onClick={() => setSidebarOpen(false)}>
+                    <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                      <button
+                        type="button"
+                        className="-m-2.5 p-2.5"
+                        onClick={() => setSidebarOpen(false)}
+                      >
                         <span className="sr-only">Close sidebar</span>
-                        <XMarkIcon className="h-6 w-6 text-white"
-                                   aria-hidden="true"/>
+                        <XMarkIcon
+                          className="h-6 w-6 text-white"
+                          aria-hidden="true"
+                        />
                       </button>
                     </div>
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div
-                    className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-8 w-auto"
@@ -168,9 +173,15 @@ export default function DashboardLayout(props: Props) {
                       />
                     </div>
                     <nav className="flex flex-1 flex-col">
-                      <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                      <ul
+                        role="list"
+                        className="flex flex-1 flex-col gap-y-7"
+                      >
                         <li>
-                          <ul role="list" className="-mx-2 space-y-1">
+                          <ul
+                            role="list"
+                            className="-mx-2 space-y-1"
+                          >
                             {navigation.map((item) => (
                               <li key={item.name}>
                                 <a
@@ -179,13 +190,15 @@ export default function DashboardLayout(props: Props) {
                                     item.href === path
                                       ? 'bg-indigo-700 text-white'
                                       : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                   )}
                                 >
                                   <item.icon
                                     className={classNames(
-                                      item.href === path ? 'text-white' : 'text-indigo-200 group-hover:text-white',
-                                      'h-6 w-6 shrink-0'
+                                      item.href === path
+                                        ? 'text-white'
+                                        : 'text-indigo-200 group-hover:text-white',
+                                      'h-6 w-6 shrink-0',
                                     )}
                                     aria-hidden="true"
                                   />
@@ -196,11 +209,13 @@ export default function DashboardLayout(props: Props) {
                           </ul>
                         </li>
                         <li>
-                          <div
-                            className="text-xs font-semibold leading-6 text-indigo-200">Your
-                            teams
+                          <div className="text-xs font-semibold leading-6 text-indigo-200">
+                            Your teams
                           </div>
-                          <ul role="list" className="-mx-2 mt-2 space-y-1">
+                          <ul
+                            role="list"
+                            className="-mx-2 mt-2 space-y-1"
+                          >
                             {teams.map((team) => (
                               <li key={team.name}>
                                 <a
@@ -209,11 +224,10 @@ export default function DashboardLayout(props: Props) {
                                     team.current
                                       ? 'bg-indigo-700 text-white'
                                       : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                   )}
                                 >
-                                  <span
-                                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
                                     {team.initial}
                                   </span>
                                   <span className="truncate">{team.name}</span>
@@ -244,11 +258,9 @@ export default function DashboardLayout(props: Props) {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div
-          className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div
-            className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <img
                 className="h-8 w-auto"
@@ -257,9 +269,15 @@ export default function DashboardLayout(props: Props) {
               />
             </div>
             <nav className="flex flex-1 flex-col">
-              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+              <ul
+                role="list"
+                className="flex flex-1 flex-col gap-y-7"
+              >
                 <li>
-                  <ul role="list" className="-mx-2 space-y-1">
+                  <ul
+                    role="list"
+                    className="-mx-2 space-y-1"
+                  >
                     {navigation.map((item) => (
                       <li key={item.name}>
                         <a
@@ -268,13 +286,15 @@ export default function DashboardLayout(props: Props) {
                             item.href === path
                               ? 'bg-indigo-700 text-white'
                               : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                           )}
                         >
                           <item.icon
                             className={classNames(
-                              item.href === path ? 'text-white' : 'text-indigo-200 group-hover:text-white',
-                              'h-6 w-6 shrink-0'
+                              item.href === path
+                                ? 'text-white'
+                                : 'text-indigo-200 group-hover:text-white',
+                              'h-6 w-6 shrink-0',
                             )}
                             aria-hidden="true"
                           />
@@ -285,11 +305,13 @@ export default function DashboardLayout(props: Props) {
                   </ul>
                 </li>
                 <li>
-                  <div
-                    className="text-xs font-semibold leading-6 text-indigo-200">Your
-                    teams
+                  <div className="text-xs font-semibold leading-6 text-indigo-200">
+                    Your teams
                   </div>
-                  <ul role="list" className="-mx-2 mt-2 space-y-1">
+                  <ul
+                    role="list"
+                    className="-mx-2 mt-2 space-y-1"
+                  >
                     {teams.map((team) => (
                       <li key={team.name}>
                         <a
@@ -298,11 +320,10 @@ export default function DashboardLayout(props: Props) {
                             team.current
                               ? 'bg-indigo-700 text-white'
                               : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                           )}
                         >
-                          <span
-                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
                             {team.initial}
                           </span>
                           <span className="truncate">{team.name}</span>
@@ -329,22 +350,35 @@ export default function DashboardLayout(props: Props) {
         </div>
 
         <div className="lg:pl-72">
-          <div
-            className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-            <button type="button"
-                    className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
-                    onClick={() => setSidebarOpen(true)}>
+          <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+            <button
+              type="button"
+              className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
               <span className="sr-only">Open sidebar</span>
-              <Bars3Icon className="h-6 w-6" aria-hidden="true"/>
+              <Bars3Icon
+                className="h-6 w-6"
+                aria-hidden="true"
+              />
             </button>
 
             {/* Separator */}
-            <div className="h-6 w-px bg-gray-900/10 lg:hidden"
-                 aria-hidden="true"/>
+            <div
+              className="h-6 w-px bg-gray-900/10 lg:hidden"
+              aria-hidden="true"
+            />
 
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <form className="relative flex flex-1" action="#" method="GET">
-                <label htmlFor="search-field" className="sr-only">
+              <form
+                className="relative flex flex-1"
+                action="#"
+                method="GET"
+              >
+                <label
+                  htmlFor="search-field"
+                  className="sr-only"
+                >
                   Search
                 </label>
                 <MagnifyingGlassIcon
@@ -360,19 +394,25 @@ export default function DashboardLayout(props: Props) {
                 />
               </form>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <button type="button"
-                        className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                <button
+                  type="button"
+                  className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
+                >
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true"/>
+                  <BellIcon
+                    className="h-6 w-6"
+                    aria-hidden="true"
+                  />
                 </button>
 
                 {/* Separator */}
                 <div
                   className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
-                  aria-hidden="true"/>
+                  aria-hidden="true"
+                />
 
                 {/* Profile dropdown */}
-                <AvatarMenu/>
+                <AvatarMenu />
               </div>
             </div>
           </div>
@@ -383,5 +423,5 @@ export default function DashboardLayout(props: Props) {
         </div>
       </div>
     </>
-  )
+  );
 }

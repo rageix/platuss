@@ -5,7 +5,7 @@ import Notifications from '@/components/notifications/Notifications';
 import { headers } from 'next/headers';
 import Providers from '@/lib/providers';
 
-export async function generateMetadata() : Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const csrfToken = headers().get('X-CSRF-Token') || 'missing';
 
   return {

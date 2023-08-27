@@ -1,10 +1,10 @@
 'use client';
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 
 interface Props {
-  value: number,
-  onChange: (arg: number) => void
+  value: number;
+  onChange: (arg: number) => void;
 }
 
 export default function PageNumberInput(props: Props) {
@@ -16,10 +16,10 @@ export default function PageNumberInput(props: Props) {
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     let value = parseInt(e.target.value);
-    if(isNaN(value)) {
+    if (isNaN(value)) {
       return;
     }
-    if(value < 0) {
+    if (value < 0) {
       value = 0;
     }
     setValue(value);
@@ -33,8 +33,7 @@ export default function PageNumberInput(props: Props) {
   return (
     <form onSubmit={onSubmit}>
       <div className="flex rounded-md shadow-sm">
-        <div
-          className="relative flex flex-grow items-stretch focus-within:z-10">
+        <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <input
             name="page"
             id="page"
@@ -48,11 +47,12 @@ export default function PageNumberInput(props: Props) {
           type="submit"
           className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         >
-          <MagnifyingGlassIcon className="-ml-0.5 h-5 w-5 text-gray-400"
-                               aria-hidden="true"/>
+          <MagnifyingGlassIcon
+            className="-ml-0.5 h-5 w-5 text-gray-400"
+            aria-hidden="true"
+          />
         </button>
       </div>
     </form>
-  )
-
+  );
 }

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import Controller from './Controller';
-import ErrorNotification from "../errorNotification/ErrorNotification";
+import ErrorNotification from '../errorNotification/ErrorNotification';
 
 const controller = new Controller();
 export default function Notifications() {

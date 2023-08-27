@@ -1,7 +1,3 @@
 export default function Page() {
-
-  return (
-    <div>Nothing here</div>
-  )
-
+  return <div>Nothing here</div>;
 }

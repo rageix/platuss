@@ -1,10 +1,8 @@
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes } from 'react';
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-}
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export default function TableNavButton(props: Props) {
-
   return (
     <button
       {...props}
@@ -12,6 +10,5 @@ export default function TableNavButton(props: Props) {
     >
       {props.children}
     </button>
-  )
-
+  );
 }

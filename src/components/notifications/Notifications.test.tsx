@@ -7,14 +7,16 @@ import {
 } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import emitter from '@/lib/emitter';
-import Notifications from "./Notifications";
-import QueryWrapper from "../../../__tests__/QueryWrapper";
+import Notifications from './Notifications';
+import QueryWrapper from '../../../__tests__/QueryWrapper';
 
 describe('<Notifications />', () => {
   it('works correctly', async () => {
-    render(<QueryWrapper>
-      <Notifications/>
-    </QueryWrapper>);
+    render(
+      <QueryWrapper>
+        <Notifications />
+      </QueryWrapper>,
+    );
 
     const notifications =
       screen.getByTestId<HTMLInputElement>('notificationArea');
@@ -48,10 +50,8 @@ describe('<Notifications />', () => {
       closeButtons = notifications.querySelectorAll('.error .close');
     }
 
-    await waitFor(
-      () => {
-        expect(notifications.querySelectorAll('.error')).toHaveLength(0);
-      },
-    );
+    await waitFor(() => {
+      expect(notifications.querySelectorAll('.error')).toHaveLength(0);
+    });
   });
 });

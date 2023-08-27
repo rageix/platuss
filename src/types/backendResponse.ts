@@ -2,7 +2,7 @@ export enum ResponseType {
   Data = 'data',
   Error = 'error',
   Ok = 'ok',
-  Redirect = ''
+  Redirect = '',
 }
 
 export enum ResponseError {
@@ -15,9 +15,9 @@ export enum ResponseError {
 }
 
 export interface BackendResponse<T> {
-  type: ResponseType,
-  error?: ResponseError,
-  data?: T,
-  errors?: string[],
-  redirect?: string,
+  type: ResponseType;
+  error?: ResponseError;
+  data?: T;
+  errors?: string[];
+  redirect?: string;
 }

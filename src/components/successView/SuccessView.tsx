@@ -1,8 +1,8 @@
 import { PropsWithChildren, ReactElement } from 'react';
 
-interface Props extends PropsWithChildren{
-  h2: string | ReactElement,
-  message: string | ReactElement,
+interface Props extends PropsWithChildren {
+  h2: string | ReactElement;
+  message: string | ReactElement;
 }
 
 export default function SuccessView(props: Props) {

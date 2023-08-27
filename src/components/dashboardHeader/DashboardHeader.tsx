@@ -32,7 +32,7 @@ export default function DashboardHeader(props: Props) {
     event.preventDefault();
 
     await fetch('/api/logout');
-    await    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
       queryKey: ['/api/currentUser'],
     });
   }
@@ -49,7 +49,7 @@ export default function DashboardHeader(props: Props) {
             className="-m-1.5 p-1.5"
           >
             <span className="sr-only">platuss</span>
-            <Logo className="h-8 w-8"/>
+            <Logo className="h-8 w-8" />
           </Link>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">

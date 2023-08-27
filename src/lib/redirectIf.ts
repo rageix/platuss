@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
-import { userIsLoggedIn } from "@/lib/userIsLoggedIn";
+import { redirect } from 'next/navigation';
+import { userIsLoggedIn } from '@/lib/userIsLoggedIn';
 
 /**
  * Redirects to another path if user is logged in.

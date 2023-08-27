@@ -1,19 +1,25 @@
 import { Metadata } from 'next';
-import Link from "next/link";
-import SuccessView from "@/components/successView/SuccessView";
+import Link from 'next/link';
+import SuccessView from '@/components/successView/SuccessView';
 
 export const metadata: Metadata = {
   title: 'Verify email - success',
 };
 
-const message = <>
-  Your password has been updated.<br/>
-  You can continue to use the website normally.
-</>
+const message = (
+  <>
+    Your password has been updated.
+    <br />
+    You can continue to use the website normally.
+  </>
+);
 
 export default async function Page() {
   return (
-    <SuccessView h2="Success!" message={message}>
+    <SuccessView
+      h2="Success!"
+      message={message}
+    >
       <div className="mt-10 flex items-center justify-center gap-x-6">
         <Link
           href="/login"

@@ -16,13 +16,13 @@ function newNonce() {
  * @param key - a base 64 encoded 32bit key
  * @return string - a base 64 encoded message
  */
-export function encrypt (json: object, key: string): string {
+export function encrypt(json: object, key: string): string {
   const keyUint8Array = decodeBase64(key);
 
-  if(keyUint8Array.length !== secretbox.keyLength) {
-
-    throw new Error(`Key size is incorrect! Key is ${keyUint8Array.length} bytes and should be ${secretbox.keyLength} bytes!`);
-
+  if (keyUint8Array.length !== secretbox.keyLength) {
+    throw new Error(
+      `Key size is incorrect! Key is ${keyUint8Array.length} bytes and should be ${secretbox.keyLength} bytes!`,
+    );
   }
 
   const nonce = newNonce();
@@ -44,10 +44,10 @@ export function encrypt (json: object, key: string): string {
 export function decrypt<T>(messageWithNonce: string, key: string): T {
   const keyUint8Array = decodeBase64(key);
 
-  if(keyUint8Array.length !== secretbox.keyLength) {
-
-    throw new Error(`Key size is incorrect! Key is ${keyUint8Array.length} bytes and should be ${secretbox.keyLength} bytes!`);
-
+  if (keyUint8Array.length !== secretbox.keyLength) {
+    throw new Error(
+      `Key size is incorrect! Key is ${keyUint8Array.length} bytes and should be ${secretbox.keyLength} bytes!`,
+    );
   }
 
   const messageWithNonceAsUint8Array = decodeBase64(messageWithNonce);
