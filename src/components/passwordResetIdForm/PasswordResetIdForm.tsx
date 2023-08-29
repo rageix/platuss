@@ -1,77 +1,149 @@
 'use client';
-import Controller from './Controller';
-import { formErrorsByPath } from '@/lib/lib';
 import FormErrors from '../formError/FormErrors';
 import Input from '../input/Input';
 import PrimaryButton from '../buttons/PrimaryButton';
 import FormLabel from '@/components/formLabel/FormLabel';
+import Former, { ValidateFn } from '@rageix/former';
+import { postData } from '@/lib/requests';
+import { ApiPasswordResetIdPost } from '@/app/api/passwordReset/id/route';
+import { ResponseType } from '@/types/backendResponse';
+import { useParams, usePathname } from 'next/navigation';
+import { getZodErrors } from '@/lib/getZodErrors';
+import { zedPasswordValidator } from '@/lib/validation';
+import { useEffect } from 'react';
 
-const controller = new Controller();
+interface Form {
+  password: string;
+  passwordAgain: string;
+}
+
+const form = new Former<Form>({
+  defaultValues: {
+    password: '',
+    passwordAgain: '',
+  },
+});
+
+const passwordValidator: ValidateFn = (value) =>
+  getZodErrors(
+    zedPasswordValidator
+      .refine(
+        (val) => {
+          return val === form.getValues().passwordAgain;
+        },
+        {
+          message: 'Password must match Password (Again)',
+        },
+      )
+      .safeParse(value),
+  );
+
+const passwordAgainValidator: ValidateFn = (value) =>
+  getZodErrors(
+    zedPasswordValidator
+      .refine(
+        (val) => {
+          return val === form.getValues().password;
+        },
+        {
+          message: 'Password (Again) must match Password.',
+        },
+      )
+      .safeParse(value),
+  );
+
 export default function PasswordResetIdForm() {
-  controller.onRender();
-  const state = controller.state;
-  const form = controller.form;
-  const passwordErrors = formErrorsByPath(state, 'password');
-  const passwordAgainErrors = formErrorsByPath(state, 'passwordAgain');
+  const params = useParams();
+  const path = usePathname();
+
+  form.useForm(async (values) => {
+    const response = await postData<ApiPasswordResetIdPost, never>(
+      '/api/passwordReset/id',
+      {
+        password: values.password,
+        id: params.id as string,
+      },
+    );
+
+    if (response.type === ResponseType.Ok) {
+      window.location.href = '/passwordReset/success';
+    }
+  });
+
+  useEffect(() => {
+    form.reset();
+  }, [path]);
 
   return (
     <form
       data-testid="passwordResetIdForm"
       className="space-y-6"
-      onSubmit={controller.onSubmitForm}
+      {...form.getFormProps()}
     >
-      <div>
-        <div className="flex items-center justify-between">
-          <FormLabel htmlFor="password">Password</FormLabel>
-        </div>
-        <div className="mt-2">
-          <Input
-            id="password"
-            data-testid="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            value={form.password}
-            onChange={controller.onChangePassword}
-            aria-describedby="passwordErrors"
-            aria-invalid={passwordErrors.length > 0}
-          />
-        </div>
-        <FormErrors
-          errors={passwordErrors}
-          id="passwordEerrors"
-          data-testid="passwordEerrors"
-        />
-      </div>
-      <div>
-        <div className="flex items-center justify-between">
-          <FormLabel htmlFor="passwordAgain">Password (Again)</FormLabel>
-        </div>
-        <div className="mt-2">
-          <Input
-            id="passwordAgain"
-            data-testid="passwordAgain"
-            name="passwordAgain"
-            type="password"
-            autoComplete="current-password"
-            value={form.passwordAgain}
-            onChange={controller.onChangePasswordAgain}
-            aria-describedby="passwordAgainErrors"
-            aria-invalid={passwordAgainErrors.length > 0}
-          />
-        </div>
-        <FormErrors
-          errors={passwordAgainErrors}
-          id="passwordAgainErrors"
-          data-testid="passwordAgainErrors"
-        />
-      </div>
+      <form.Field
+        name="password"
+        validateOtherFields={['passwordAgain']}
+        validate={passwordValidator}
+        children={(field) => (
+          <div>
+            <div className="flex items-center justify-between">
+              <FormLabel htmlFor="password">Password</FormLabel>
+            </div>
+            <div className="mt-2">
+              <Input
+                id="password"
+                name="password"
+                data-testid="password"
+                type="password"
+                autoComplete="current-password"
+                aria-describedby="passwordErrors"
+                aria-invalid={field.hasErrors()}
+                {...field.getValueProps()}
+              />
+            </div>
+            <FormErrors
+              errors={field.state.errors}
+              id="passwordErrors"
+              data-testid="passwordErrors"
+            />
+          </div>
+        )}
+      />
+      <form.Field
+        name="passwordAgain"
+        validateOtherFields={['password']}
+        validate={passwordAgainValidator}
+        children={(field) => (
+          <div>
+            <div className="flex items-center justify-between">
+              <FormLabel htmlFor="passwordAgain">Password (Again)</FormLabel>
+            </div>
+            <div className="mt-2">
+              <Input
+                id="passwordAgain"
+                name="passwordAgain"
+                data-testid="passwordAgain"
+                type="password"
+                autoComplete="current-password"
+                aria-describedby="passwordAgainErrors"
+                aria-invalid={field.hasErrors()}
+                {...field.getValueProps()}
+              />
+            </div>
+            <FormErrors
+              errors={field.state.errors}
+              id="passwordAgainErrors"
+              data-testid="passwordAgainErrors"
+            />
+          </div>
+        )}
+      />
       <div>
         <PrimaryButton
           data-testid="submitButton"
           type="submit"
           className="w-full"
-          disabled={!state.editable || state.errors.length > 0}
+          disabled={!form.valid}
         >
           Reset password
         </PrimaryButton>

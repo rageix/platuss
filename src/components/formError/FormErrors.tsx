@@ -1,7 +1,5 @@
-import { ZodIssue } from 'zod';
-
 interface Props {
-  errors: ZodIssue[];
+  errors: string[];
   id?: string;
   'data-testid'?: string;
 }
@@ -17,7 +15,7 @@ export default function FormErrors(props: Props) {
           key={i}
           className="mt-2 text-sm text-red-600"
         >
-          {v.message}
+          {v}
         </p>
       ))}
     </div>

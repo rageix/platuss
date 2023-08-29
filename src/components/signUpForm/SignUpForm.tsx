@@ -1,134 +1,234 @@
 'use client';
 import FormLink from '../link/FormLink';
-import Controller from './Controller';
-import { formErrorsByPath } from '@/lib/lib';
 import FormErrors from '../formError/FormErrors';
 import Input from '../input/Input';
 import Checkbox from '../checkbox/Checkbox';
 import PrimaryButton from '../buttons/PrimaryButton';
 import Label from '../label/Label';
 import FormLabel from '@/components/formLabel/FormLabel';
+import Former, { ValidateFn } from '@rageix/former';
+import { postData } from '@/lib/requests';
+import { ApiSignUpPost } from '@/app/api/signUp/route';
+import { ResponseType } from '@/types/backendResponse';
+import { usePathname, useRouter } from 'next/navigation';
+import { z } from 'zod';
+import { getZodErrors } from '@/lib/getZodErrors';
+import { zedEmailValidator, zedPasswordValidator } from '@/lib/validation';
+import { useEffect } from 'react';
 
-const controller = new Controller();
+interface Form {
+  email: string;
+  password: string;
+  passwordAgain: string;
+  terms: boolean;
+}
+
+const form = new Former<Form>({
+  defaultValues: {
+    email: '',
+    password: '',
+    passwordAgain: '',
+    terms: false,
+  },
+});
+
+const zedTermsValidator = z.boolean();
+
+const emailValidator: ValidateFn = (value) =>
+  getZodErrors(zedEmailValidator.safeParse(value));
+const passwordValidator: ValidateFn = (value) =>
+  getZodErrors(
+    zedPasswordValidator
+      .refine(
+        (val) => {
+          return val === form.getValues().passwordAgain;
+        },
+        {
+          message: 'Password must match Password (Again)',
+        },
+      )
+      .safeParse(value),
+  );
+
+const passwordAgainValidator: ValidateFn = (value) =>
+  getZodErrors(
+    zedPasswordValidator
+      .refine(
+        (val) => {
+          return val === form.getValues().password;
+        },
+        {
+          message: 'Password (Again) must match Password.',
+        },
+      )
+      .safeParse(value),
+  );
+
+const termsValidator: ValidateFn = (value) =>
+  getZodErrors(
+    zedTermsValidator
+      .refine(
+        (val) => {
+          return val;
+        },
+        {
+          message: 'You must accept the terms before creating an account.',
+        },
+      )
+      .safeParse(value),
+  );
+
 export default function SignUpForm() {
-  controller.onRender();
-  const state = controller.state;
-  const form = controller.form;
-  const emailErrors = formErrorsByPath(state, 'email');
-  const passwordErrors = formErrorsByPath(state, 'password');
-  const passwordAgainErrors = formErrorsByPath(state, 'passwordAgain');
-  const termsErrors = formErrorsByPath(state, 'terms');
+  const router = useRouter();
+  const path = usePathname();
+
+  form.useForm(async (values) => {
+    const response = await postData<ApiSignUpPost, never>(
+      '/api/signUp',
+      values,
+    );
+
+    if (response.type === ResponseType.Ok) {
+      router.push('/');
+    }
+  });
+
+  useEffect(() => {
+    form.reset();
+  }, [path]);
 
   return (
     <form
       className="space-y-6"
-      onSubmit={controller.onSubmitForm}
       data-testid="signUpForm"
+      {...form.getFormProps()}
     >
-      <div>
-        <FormLabel htmlFor="email">Email</FormLabel>
-        <div className="mt-2">
-          <Input
-            id="email"
-            name="email"
-            data-testid="email"
-            autoComplete="email"
-            value={form.email}
-            onChange={controller.onChangeEmail}
-            aria-describedby="emailErrors"
-            aria-invalid={emailErrors.length > 0}
-          />
-        </div>
-        <FormErrors
-          errors={emailErrors}
-          id="emailErrors"
-          data-testid="emailErrors"
-        />
-      </div>
-      <div>
-        <div className="flex items-center justify-between">
-          <FormLabel htmlFor="password">Password</FormLabel>
-        </div>
-        <div className="mt-2">
-          <Input
-            id="password"
-            name="password"
-            data-testid="password"
-            type="password"
-            autoComplete="current-password"
-            value={form.password}
-            onChange={controller.onChangePassword}
-            aria-describedby="passwordErrors"
-            aria-invalid={passwordErrors.length > 0}
-          />
-        </div>
-        <FormErrors
-          errors={passwordErrors}
-          id="passwordErrors"
-          data-testid="passwordErrors"
-        />
-      </div>
-      <div>
-        <div className="flex items-center justify-between">
-          <FormLabel htmlFor="passwordAgain">Password (Again)</FormLabel>
-        </div>
-        <div className="mt-2">
-          <Input
-            id="passwordAgain"
-            name="passwordAgain"
-            data-testid="passwordAgain"
-            type="password"
-            autoComplete="current-password"
-            value={form.passwordAgain}
-            onChange={controller.onChangePasswordAgain}
-            aria-describedby="passwordAgainErrors"
-            aria-invalid={passwordAgainErrors.length > 0}
-          />
-        </div>
-        <FormErrors
-          errors={passwordAgainErrors}
-          id="passwordAgainErrors"
-          data-testid="passwordAgainErrors"
-        />
-      </div>
-      <div className="mt-2">
-        <div className="flex items-center">
-          <Checkbox
-            id="acceptTerms"
-            name="acceptTerms"
-            data-testid="acceptTerms"
-            aria-describedby="termsErrors"
-            onChange={controller.onChangeTerms}
-            checked={form.terms}
-            aria-invalid={termsErrors.length > 0}
-          />
-          <Label
-            className="ml-3"
-            htmlFor="acceptTerms"
-            aria-invalid={termsErrors.length > 0}
-          >
-            <span>I have read and accept the </span>
-            <FormLink
-              href="#"
-              target="_blank"
-              aria-invalid={termsErrors.length > 0}
-            >
-              terms of service
-            </FormLink>
-            .
-          </Label>
-        </div>
-        <FormErrors
-          errors={termsErrors}
-          id="termsErrors"
-          data-testid="termsErrors"
-        />
-      </div>
+      <form.Field
+        name="email"
+        validate={emailValidator}
+        children={(field) => (
+          <div>
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <div className="mt-2">
+              <Input
+                id="email"
+                name="email"
+                data-testid="email"
+                autoComplete="email"
+                aria-describedby="emailErrors"
+                aria-invalid={field.hasErrors()}
+                {...field.getValueProps()}
+              />
+            </div>
+            <FormErrors
+              errors={field.state.errors}
+              id="emailErrors"
+              data-testid="emailErrors"
+            />
+          </div>
+        )}
+      />
+      <form.Field
+        name="password"
+        validateOtherFields={['passwordAgain']}
+        validate={passwordValidator}
+        children={(field) => (
+          <div>
+            <div className="flex items-center justify-between">
+              <FormLabel htmlFor="password">Password</FormLabel>
+            </div>
+            <div className="mt-2">
+              <Input
+                id="password"
+                name="password"
+                data-testid="password"
+                type="password"
+                autoComplete="current-password"
+                aria-describedby="passwordErrors"
+                aria-invalid={field.hasErrors()}
+                {...field.getValueProps()}
+              />
+            </div>
+            <FormErrors
+              errors={field.state.errors}
+              id="passwordErrors"
+              data-testid="passwordErrors"
+            />
+          </div>
+        )}
+      />
+      <form.Field
+        name="passwordAgain"
+        validateOtherFields={['password']}
+        validate={passwordAgainValidator}
+        children={(field) => (
+          <div>
+            <div className="flex items-center justify-between">
+              <FormLabel htmlFor="passwordAgain">Password (Again)</FormLabel>
+            </div>
+            <div className="mt-2">
+              <Input
+                id="passwordAgain"
+                name="passwordAgain"
+                data-testid="passwordAgain"
+                type="password"
+                autoComplete="current-password"
+                aria-describedby="passwordAgainErrors"
+                aria-invalid={field.hasErrors()}
+                {...field.getValueProps()}
+              />
+            </div>
+            <FormErrors
+              errors={field.state.errors}
+              id="passwordAgainErrors"
+              data-testid="passwordAgainErrors"
+            />
+          </div>
+        )}
+      />
+      <form.Field
+        name="terms"
+        validate={termsValidator}
+        children={(field) => (
+          <div className="mt-2">
+            <div className="flex items-center">
+              <Checkbox
+                id="acceptTerms"
+                name="acceptTerms"
+                data-testid="acceptTerms"
+                aria-describedby="termsErrors"
+                aria-invalid={field.hasErrors()}
+                {...field.getCheckedProps()}
+              />
+              <Label
+                className="ml-3"
+                htmlFor="acceptTerms"
+                aria-invalid={field.hasErrors()}
+              >
+                <span>I have read and accept the </span>
+                <FormLink
+                  href="#"
+                  target="_blank"
+                  aria-invalid={field.hasErrors()}
+                >
+                  terms of service
+                </FormLink>
+                .
+              </Label>
+            </div>
+            <FormErrors
+              errors={field.state.errors}
+              id="termsErrors"
+              data-testid="termsErrors"
+            />
+          </div>
+        )}
+      />
       <div>
         <PrimaryButton
           type="submit"
           className="w-full"
-          disabled={!state.editable || state.errors.length > 0}
+          disabled={!form.valid}
           data-testid="submitButton"
         >
           Sign up
