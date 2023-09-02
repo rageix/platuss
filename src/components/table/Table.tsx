@@ -5,45 +5,34 @@ import {
   PaginationState,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import PageNumberInput from '@/components/table/PageNumberInput';
 import TableNavButton from '@/components/table/TableNavButton';
 
 interface Props<T> {
-  defaultData?: T[];
+  data: T[];
+  pagination: PaginationState;
+  setPagination: Dispatch<SetStateAction<PaginationState>>;
+  rowSelection: {};
+  setRowSelection: Dispatch<SetStateAction<{}>>;
   columns: ColumnDef<T, any>[];
   dataFetchFn: () => T[];
 }
 
 export default function Table<T>(props: Props<T>) {
-  const [data, _setData] = useState<T[]>(props.defaultData as T[]);
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [rowSelection, setRowSelection] = useState({});
-
-  const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize],
-  );
-
   const table = useReactTable<T>({
-    data: data,
+    data: props.data,
     columns: props.columns,
     getCoreRowModel: getCoreRowModel(),
     // pageCount: dataQuery.data?.pageCount ?? -1,
-    pageCount: 5,
+    // pageCount: 5,
     state: {
-      pagination,
-      rowSelection,
+      pagination: props.pagination,
+      rowSelection: props.rowSelection,
     },
     enableRowSelection: true, //enable row selection for all rows
-    onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
+    onRowSelectionChange: props.setRowSelection,
+    onPaginationChange: props.setPagination,
     manualPagination: true,
     debugTable: true,
   });
@@ -112,7 +101,7 @@ export default function Table<T>(props: Props<T>) {
               Page
             </label>
             <PageNumberInput
-              value={pagination.pageIndex}
+              value={props.pagination.pageIndex}
               onChange={table.setPageIndex}
             />
           </div>

@@ -7,8 +7,10 @@ import { getQuery } from '@/lib/getQuery';
 import db from '@/lib/db';
 import { deleteSchema } from '@/types/deleteRequest';
 import { z } from 'zod';
+import { makePagination } from '@/lib/pagination';
 
 const getSchema = paginationSchema.extend({
+  id: z.string().uuid().optional(),
   name: z.string().trim().optional(),
 });
 
@@ -28,10 +30,12 @@ export async function GET(req: NextRequest) {
     }
 
     const { data } = result;
+    const { pageIndex, pageSize } = makePagination(data);
 
     const tags = await db.tags.findMany({
       where: {
         userId: user.id,
+        id: data.id ? data.id : undefined,
         name: data.name
           ? {
               contains: data.name,
@@ -39,14 +43,14 @@ export async function GET(req: NextRequest) {
             }
           : undefined,
       },
-      skip: data.page * data.perPage,
-      take: data.perPage,
+      skip: pageIndex * pageSize,
+      take: pageSize,
     });
 
     const response: PaginatedResponse<Tag[]> = {
       data: tags,
-      page: data.page,
-      perPage: data.perPage,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
     };
 
     return respond.withData(response);

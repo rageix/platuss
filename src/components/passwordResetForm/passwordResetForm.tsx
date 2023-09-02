@@ -10,7 +10,7 @@ import { postData } from '@/lib/requests';
 import { ResponseType } from '@/types/backendResponse';
 import { ApiPasswordResetPost } from '@/app/api/passwordReset/route';
 import { getZodErrors } from '@/lib/getZodErrors';
-import { zedEmailValidator } from '@/lib/validation';
+import { zEmailValidator } from '@/lib/validation';
 
 interface Form {
   email: string;
@@ -23,7 +23,7 @@ const form = new Former<Form>({
 });
 
 const emailFieldValidator: ValidateFn = (value) =>
-  getZodErrors(zedEmailValidator.safeParse(value));
+  getZodErrors(zEmailValidator.safeParse(value));
 
 export default function PasswordResetForm() {
   const path = usePathname();

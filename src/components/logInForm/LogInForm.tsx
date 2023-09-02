@@ -12,7 +12,7 @@ import Former, { ValidateFn } from '@rageix/former';
 import { postData } from '@/lib/requests';
 import { ResponseType } from '@/types/backendResponse';
 import { ApiLoginPost } from '@/app/api/login/route';
-import { zedEmailValidator, zedPasswordValidator } from '@/lib/validation';
+import { zEmailValidator, zPasswordValidator } from '@/lib/validation';
 import { getZodErrors } from '@/lib/getZodErrors';
 
 interface Form {
@@ -30,9 +30,9 @@ const form = new Former<Form>({
 });
 
 const emailValidator: ValidateFn = (value) =>
-  getZodErrors(zedEmailValidator.safeParse(value));
+  getZodErrors(zEmailValidator.safeParse(value));
 const passwordValidator: ValidateFn = (value) =>
-  getZodErrors(zedPasswordValidator.safeParse(value));
+  getZodErrors(zPasswordValidator.safeParse(value));
 
 export default function LogInForm() {
   const router = useRouter();

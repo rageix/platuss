@@ -8,8 +8,17 @@ export interface Tag {
   user?: User;
   name: string;
   color: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   budgets?: Budget[];
   transactionDetails?: TransactionDetail[];
+}
+
+export function newTag(): Tag {
+  return {
+    id: '',
+    userId: '',
+    name: 'New Tag',
+    color: '',
+  };
 }

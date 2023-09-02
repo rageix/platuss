@@ -5,14 +5,16 @@ export interface PaginatedResult extends BackendResponse<any> {}
 
 export interface PaginatedResponse<T> {
   data: T;
-  page: number;
-  perPage: number;
+  pageIndex: number;
+  pageSize: number;
 }
 
 export const paginationSchema = z.object({
-  page: z.number().int().optional().default(0),
-  perPage: z.number().int().optional().default(10),
+  pageIndex: z.number().int().optional(),
+  pageSize: z.number().int().optional(),
 });
+
+export type Pagination = z.infer<typeof paginationSchema>;
 
 export enum FilterDirection {
   LowToHigh = 0, // low to high
@@ -22,24 +24,4 @@ export enum FilterDirection {
 export interface Sort {
   field: string;
   direction: FilterDirection;
-}
-
-export interface PaginatedResults<T> {
-  results: T[];
-  pagination: Pagination;
-  sort?: Sort[];
-}
-
-export interface Pagination {
-  page?: number;
-  perPage?: number;
-  offset?: number;
-}
-
-export function newPagination(): Pagination {
-  return {
-    page: 1,
-    perPage: 25,
-    offset: 25,
-  };
 }

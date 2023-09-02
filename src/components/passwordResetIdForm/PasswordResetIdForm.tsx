@@ -9,7 +9,7 @@ import { ApiPasswordResetIdPost } from '@/app/api/passwordReset/id/route';
 import { ResponseType } from '@/types/backendResponse';
 import { useParams, usePathname } from 'next/navigation';
 import { getZodErrors } from '@/lib/getZodErrors';
-import { zedPasswordValidator } from '@/lib/validation';
+import { zPasswordValidator } from '@/lib/validation';
 import { useEffect } from 'react';
 
 interface Form {
@@ -26,7 +26,7 @@ const form = new Former<Form>({
 
 const passwordValidator: ValidateFn = (value) =>
   getZodErrors(
-    zedPasswordValidator
+    zPasswordValidator
       .refine(
         (val) => {
           return val === form.getValues().passwordAgain;
@@ -40,7 +40,7 @@ const passwordValidator: ValidateFn = (value) =>
 
 const passwordAgainValidator: ValidateFn = (value) =>
   getZodErrors(
-    zedPasswordValidator
+    zPasswordValidator
       .refine(
         (val) => {
           return val === form.getValues().password;

@@ -13,7 +13,7 @@ import { ResponseType } from '@/types/backendResponse';
 import { usePathname, useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { getZodErrors } from '@/lib/getZodErrors';
-import { zedEmailValidator, zedPasswordValidator } from '@/lib/validation';
+import { zEmailValidator, zPasswordValidator } from '@/lib/validation';
 import { useEffect } from 'react';
 
 interface Form {
@@ -35,10 +35,10 @@ const form = new Former<Form>({
 const zedTermsValidator = z.boolean();
 
 const emailValidator: ValidateFn = (value) =>
-  getZodErrors(zedEmailValidator.safeParse(value));
+  getZodErrors(zEmailValidator.safeParse(value));
 const passwordValidator: ValidateFn = (value) =>
   getZodErrors(
-    zedPasswordValidator
+    zPasswordValidator
       .refine(
         (val) => {
           return val === form.getValues().passwordAgain;
@@ -52,7 +52,7 @@ const passwordValidator: ValidateFn = (value) =>
 
 const passwordAgainValidator: ValidateFn = (value) =>
   getZodErrors(
-    zedPasswordValidator
+    zPasswordValidator
       .refine(
         (val) => {
           return val === form.getValues().password;

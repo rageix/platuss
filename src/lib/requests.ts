@@ -40,7 +40,7 @@ export function processResponse<T>(
 
 export async function getData<V>(
   url = '',
-  data?: string | string[][],
+  data?: {},
 ): Promise<BackendResponse<V>> {
   // Default options are marked with *
   let query = '';

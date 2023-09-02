@@ -1,36 +1,18 @@
 'use client';
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  createColumnHelper,
+  PaginationState,
+} from '@tanstack/react-table';
 import { Tag } from '@/types/tag';
 import Checkbox from '@/components/checkbox/Checkbox';
 import Link from 'next/link';
 import Table from '@/components/table/Table';
-
-const defaultData: Tag[] = [
-  {
-    id: '1',
-    userId: '1',
-    name: 'tag 1',
-    color: '#006400',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: '2',
-    userId: '1',
-    name: 'tag 2',
-    color: '#00008B',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: '34',
-    userId: '1',
-    name: 'tag 2',
-    color: '#9400D3',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getTags } from '@/lib/api/tags';
+import TagDialog from '@/components/tagDialog/FormDialog';
+import { useParams, useRouter } from 'next/navigation';
 
 const columnHelper = createColumnHelper<Tag>();
 
@@ -89,6 +71,24 @@ const columns: ColumnDef<Tag, any>[] = [
 ];
 
 export default function Page() {
+  console.log('page render');
+  const router = useRouter();
+  const params = useParams();
+  const [show, setShow] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const { data } = useQuery({
+    queryKey: ['tags', pagination.pageIndex, pagination.pageSize],
+    queryFn: () => getTags({ ...pagination }),
+  });
+
+  useEffect(() => {
+    setShow(!!params.id);
+  }, [params]);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -104,6 +104,7 @@ export default function Page() {
           <button
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => router.push('/dashboard/tags/new')}
           >
             Add tag
           </button>
@@ -113,13 +114,21 @@ export default function Page() {
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <Table
-              defaultData={defaultData}
+              data={data || []}
+              pagination={pagination}
+              setPagination={setPagination}
               columns={columns}
               dataFetchFn={() => []}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
             />
           </div>
         </div>
       </div>
+      <TagDialog
+        show={show}
+        id={params.id as string}
+      />
     </div>
   );
 }
