@@ -8,6 +8,8 @@ import {
 import { Dispatch, SetStateAction } from 'react';
 import PageNumberInput from '@/components/table/PageNumberInput';
 import TableNavButton from '@/components/table/TableNavButton';
+import DangerButton from '@/components/buttons/DangerButton';
+import _ from 'lodash';
 
 interface Props<T> {
   data: T[];
@@ -17,9 +19,11 @@ interface Props<T> {
   setRowSelection: Dispatch<SetStateAction<{}>>;
   columns: ColumnDef<T, any>[];
   dataFetchFn: () => T[];
+  onClickDelete?: () => void;
 }
 
 export default function Table<T>(props: Props<T>) {
+  console.log('props.rowSelection', props.rowSelection);
   const table = useReactTable<T>({
     data: props.data,
     columns: props.columns,
@@ -34,11 +38,21 @@ export default function Table<T>(props: Props<T>) {
     onRowSelectionChange: props.setRowSelection,
     onPaginationChange: props.setPagination,
     manualPagination: true,
-    debugTable: true,
+    // debugTable: true,
   });
 
   return (
     <>
+      {props.onClickDelete && (
+        <div>
+          <DangerButton
+            onClick={props.onClickDelete}
+            disabled={_.isEmpty(props.rowSelection)}
+          >
+            Delete
+          </DangerButton>
+        </div>
+      )}
       <table className="min-w-full divide-y divide-gray-300">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

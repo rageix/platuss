@@ -38,32 +38,33 @@ const colorValidator: ValidateFn = (value) =>
 
 interface Props {
   id?: string;
+  onCreate: (id: string) => void;
 }
 
 export default function TagForm(props: Props) {
-  // const router = useRouter();
   const path = usePathname();
   const { data } = useQuery({
     queryKey: ['tags', props.id],
     queryFn: () => getTags({ id: props.id }),
+    refetchOnWindowFocus: false,
   });
 
   form.useForm(async (values) => {
     if (values.id === '') {
-      const response = await postData<ApiTagsPost, never>('/api/tags', values);
+      const response = await postData<ApiTagsPost, Tag>('/api/tags', values);
 
-      if (response.type === ResponseType.Ok) {
-        console.log('ok');
+      if (response.type === ResponseType.Data) {
+        if (response.data) {
+          console.log('has response data');
+          props.onCreate(response.data.id);
+          form.setValues(response.data);
+        }
       }
 
       return;
     }
 
-    const response = await putData<ApiTagsPut, never>('/api/tags', values);
-
-    if (response.type === ResponseType.Ok) {
-      console.log('ok');
-    }
+    await putData<ApiTagsPut, never>('/api/tags', values);
   });
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function TagForm(props: Props) {
 
   useEffect(() => {
     if (data) {
-      form.setValues(data[0]);
+      form.setValues(data.data[0]);
     }
   }, [data]);
 
@@ -140,7 +141,7 @@ export default function TagForm(props: Props) {
           disabled={!form.valid}
           data-testid="submitButton"
         >
-          {!form.fields.id ? 'Create' : 'Update'}
+          {props.id === 'new' ? 'Create' : 'Update'}
         </PrimaryButton>
       </div>
     </form>

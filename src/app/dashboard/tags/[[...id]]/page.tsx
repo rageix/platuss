@@ -9,10 +9,12 @@ import Checkbox from '@/components/checkbox/Checkbox';
 import Link from 'next/link';
 import Table from '@/components/table/Table';
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getTags } from '@/lib/api/tags';
-import TagDialog from '@/components/tagDialog/FormDialog';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { deleteTags, getTags } from '@/lib/api/tags';
 import { useParams, useRouter } from 'next/navigation';
+import FormDialog from '@/components/formDialog/FormDialog';
+import TagForm from '@/components/tagForm/TagForm';
+import _ from 'lodash';
 
 const columnHelper = createColumnHelper<Tag>();
 
@@ -52,9 +54,7 @@ const columns: ColumnDef<Tag, any>[] = [
   columnHelper.accessor('updatedAt', {
     id: 'updatedAt',
     header: () => 'UpdatedAt',
-    cell: ({ row }) => (
-      <span>{row.original.updatedAt.toLocaleDateString()}</span>
-    ),
+    cell: ({ row }) => <span>{row.original.updatedAt?.toString()}</span>,
   }),
   {
     id: 'edit',
@@ -71,23 +71,38 @@ const columns: ColumnDef<Tag, any>[] = [
 ];
 
 export default function Page() {
-  console.log('page render');
   const router = useRouter();
   const params = useParams();
-  const [show, setShow] = useState(false);
+  const queryClient = useQueryClient();
+  let id: string = '';
+  if (params.id) {
+    id = params.id[0];
+  }
+  const [show, setShow] = useState(!!params.id);
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
   const { data } = useQuery({
-    queryKey: ['tags', pagination.pageIndex, pagination.pageSize],
+    queryKey: ['tags', pagination.pageIndex, pagination.pageSize, id],
     queryFn: () => getTags({ ...pagination }),
   });
 
   useEffect(() => {
     setShow(!!params.id);
   }, [params]);
+
+  async function onClickDelete() {
+    console.log(rowSelection);
+    let ids: string[] = Object.keys(rowSelection).map(
+      (v) => data?.data[_.toNumber(v)].id as string,
+    );
+
+    await deleteTags(ids);
+    await queryClient.invalidateQueries({ queryKey: ['tags'] });
+    setRowSelection({});
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -114,21 +129,30 @@ export default function Page() {
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <Table
-              data={data || []}
+              data={data?.data || []}
               pagination={pagination}
               setPagination={setPagination}
               columns={columns}
               dataFetchFn={() => []}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
+              onClickDelete={onClickDelete}
             />
           </div>
         </div>
       </div>
-      <TagDialog
+      <FormDialog
+        title={id === 'new' ? 'Create Tag' : 'Edit Tag'}
         show={show}
-        id={params.id as string}
-      />
+        onHide={() => router.push('/dashboard/tags')}
+      >
+        <TagForm
+          id={id}
+          onCreate={(id) => {
+            router.push(`/dashboard/tags/${id}`);
+          }}
+        />
+      </FormDialog>
     </div>
   );
 }

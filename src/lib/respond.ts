@@ -4,7 +4,6 @@ import {
   ResponseError,
   ResponseType,
 } from '@/types/backendResponse';
-import { PaginatedResults, Pagination } from '@/types/pagination';
 import { SelectOption } from './selectOptions';
 import { NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
@@ -33,22 +32,22 @@ class Respond {
     ]);
   };
 
-  withPaginatedResults = <T>(
-    results: T[],
-    pagination: Pagination,
-  ): NextResponse => {
-    const responseData: BackendResponse<PaginatedResults<T>> = {
-      type: ResponseType.Data,
-      data: {
-        results: results,
-        pagination: pagination,
-      },
-    };
-
-    return NextResponse.json(responseData, {
-      headers: { 'X-Robots-Tag': 'noindex' },
-    });
-  };
+  // withPaginatedResults = <T>(
+  //   results: T[],
+  //   pagination: Pagination,
+  // ): NextResponse => {
+  //   const responseData: BackendResponse<PaginatedResults<T>> = {
+  //     type: ResponseType.Data,
+  //     data: {
+  //       results: results,
+  //       pagination: pagination,
+  //     },
+  //   };
+  //
+  //   return NextResponse.json(responseData, {
+  //     headers: { 'X-Robots-Tag': 'noindex' },
+  //   });
+  // };
 
   withErrorFromError = (error: Error, message?: string): NextResponse => {
     log.error('response error', error);
