@@ -8,6 +8,8 @@ import db from '@/lib/db';
 import { deleteSchema } from '@/types/deleteRequest';
 import { z } from 'zod';
 import { makePagination } from '@/lib/pagination';
+import { Prisma } from '.prisma/client';
+import TagsWhereInput = Prisma.TagsWhereInput;
 
 const getSchema = paginationSchema.extend({
   id: z.string().uuid().optional(),
@@ -32,17 +34,21 @@ export async function GET(req: NextRequest) {
     const { data } = result;
     const { pageIndex, pageSize } = makePagination(data);
 
+    const where: TagsWhereInput = {
+      userId: user.id,
+      id: data.id ? data.id : undefined,
+      name: data.name
+        ? {
+            contains: data.name,
+            mode: 'insensitive',
+          }
+        : undefined,
+    };
+
+    const count = await db.tags.count({ where: where });
+
     const tags = await db.tags.findMany({
-      where: {
-        userId: user.id,
-        id: data.id ? data.id : undefined,
-        name: data.name
-          ? {
-              contains: data.name,
-              mode: 'insensitive',
-            }
-          : undefined,
-      },
+      where: where,
       skip: pageIndex * pageSize,
       take: pageSize,
     });
@@ -51,6 +57,7 @@ export async function GET(req: NextRequest) {
       data: tags,
       pageIndex: pageIndex,
       pageSize: pageSize,
+      count: count,
     };
 
     return respond.withData(response);

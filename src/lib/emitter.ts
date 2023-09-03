@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { Props as ConfirmationDialogProps } from '../components/confirmationDialog/ConfirmationDialog';
+import { State as ConfirmationDialogState } from '../components/confirmationDialog/ConfirmationDialog';
 
 export enum emitterMessage {
   notificationError = 'notificationError',
@@ -9,11 +9,11 @@ export enum emitterMessage {
 export class Emitter {
   emitter = new EventEmitter();
 
-  on = (message: emitterMessage, fn: (...args: unknown[]) => void) => {
+  on = <T>(message: emitterMessage, fn: (arg: T) => void) => {
     this.emitter.on(message, fn);
   };
 
-  off = (message: emitterMessage, fn: (...args: unknown[]) => void) => {
+  off = <T>(message: emitterMessage, fn: (arg: T) => void) => {
     this.emitter.off(message, fn);
   };
 
@@ -21,7 +21,7 @@ export class Emitter {
     this.emitter.emit(emitterMessage.notificationError, arg);
   };
 
-  emitShowConfirmationDialog = (arg: ConfirmationDialogProps) => {
+  emitShowConfirmationDialog = (arg: ConfirmationDialogState) => {
     this.emitter.emit(emitterMessage.showConfirmationDialog, arg);
   };
 }

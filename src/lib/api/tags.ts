@@ -4,13 +4,23 @@ import { ApiTagsGet } from '@/app/api/tags/route';
 import { PaginatedResponse } from '@/types/pagination';
 import { DeleteReq } from '@/types/deleteRequest';
 
+export async function getTag(query: ApiTagsGet): Promise<Tag | undefined> {
+  if (query.id === '' || query.id === 'new') {
+    return newTag();
+  }
+
+  const response = await getData<PaginatedResponse<Tag[]>>('/api/tags', {
+    q: JSON.stringify(query),
+  });
+
+  if (response.data?.data.length) {
+    return response.data.data[0];
+  }
+}
+
 export async function getTags(
   query: ApiTagsGet,
 ): Promise<PaginatedResponse<Tag[]> | undefined> {
-  if (query.id === 'new') {
-    return { data: [newTag()], pageIndex: 0, pageSize: 10 };
-  }
-
   const response = await getData<PaginatedResponse<Tag[]>>('/api/tags', {
     q: JSON.stringify(query),
   });

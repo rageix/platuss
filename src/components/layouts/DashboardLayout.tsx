@@ -19,6 +19,7 @@ import { classNames } from '@/lib/lib';
 import AvatarMenu from '@/components/avatarMenu/AvatarMenu';
 import { useUser } from '@/hooks/user';
 import { usePathname, useRouter } from 'next/navigation';
+import ConfirmationDialog from '@/components/confirmationDialog/ConfirmationDialog';
 
 interface NavigatorionItem {
   name: string;
@@ -416,12 +417,12 @@ export default function DashboardLayout(props: Props) {
               </div>
             </div>
           </div>
-
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8">{props.children}</div>
           </main>
         </div>
       </div>
+      <ConfirmationDialog />
     </>
   );
 }

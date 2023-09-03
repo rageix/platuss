@@ -8,26 +8,32 @@ interface Props {
 }
 
 export default function PageNumberInput(props: Props) {
-  const [value, setValue] = useState<number>(props.value + 1);
+  const [value, setValue] = useState<string>(String(props.value + 1));
 
   useEffect(() => {
-    setValue(props.value + 1);
+    setValue(String(props.value + 1));
   }, [props.value]);
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
-    let value = parseInt(e.target.value);
-    if (isNaN(value)) {
+    const targetValue = e.target.value;
+    if (targetValue === '') {
+      setValue(targetValue);
       return;
     }
-    if (value < 0) {
-      value = 0;
+    let parsed = parseInt(targetValue);
+    if (parsed < 1) {
+      parsed = 1;
     }
-    setValue(value);
+    setValue(String(parsed));
   }
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    props.onChange(value - 1);
+    let parsed = parseInt(value);
+    if (isNaN(parsed) || parsed < 1) {
+      parsed = 1;
+    }
+    props.onChange(parsed - 1);
   }
 
   return (
@@ -39,7 +45,7 @@ export default function PageNumberInput(props: Props) {
             id="page"
             className="block w-20 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             type="number"
-            value={value.toString()}
+            value={value}
             onChange={onChange}
           />
         </div>

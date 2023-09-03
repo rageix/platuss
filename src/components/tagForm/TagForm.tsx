@@ -13,7 +13,7 @@ import { zCssColorValidator, zMinMessage } from '@/lib/validation';
 import { useEffect } from 'react';
 import { Tag } from '@/types/tag';
 import { ApiTagsPost, ApiTagsPut } from '@/app/api/tags/route';
-import { getTags } from '@/lib/api/tags';
+import { getTag } from '@/lib/api/tags';
 import { useQuery } from '@tanstack/react-query';
 
 interface Form extends Partial<Tag> {
@@ -45,7 +45,7 @@ export default function TagForm(props: Props) {
   const path = usePathname();
   const { data } = useQuery({
     queryKey: ['tags', props.id],
-    queryFn: () => getTags({ id: props.id }),
+    queryFn: () => getTag({ id: props.id }),
     refetchOnWindowFocus: false,
   });
 
@@ -55,7 +55,6 @@ export default function TagForm(props: Props) {
 
       if (response.type === ResponseType.Data) {
         if (response.data) {
-          console.log('has response data');
           props.onCreate(response.data.id);
           form.setValues(response.data);
         }
@@ -73,7 +72,7 @@ export default function TagForm(props: Props) {
 
   useEffect(() => {
     if (data) {
-      form.setValues(data.data[0]);
+      form.setValues(data);
     }
   }, [data]);
 

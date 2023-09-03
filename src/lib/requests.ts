@@ -42,7 +42,6 @@ export async function getData<V>(
   url = '',
   data?: {},
 ): Promise<BackendResponse<V>> {
-  // Default options are marked with *
   let query = '';
   if (data) {
     query = '?' + new URLSearchParams(data);

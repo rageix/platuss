@@ -3,6 +3,7 @@ import {
   ColumnDef,
   createColumnHelper,
   PaginationState,
+  SortingState,
 } from '@tanstack/react-table';
 import { Tag } from '@/types/tag';
 import Checkbox from '@/components/checkbox/Checkbox';
@@ -15,6 +16,7 @@ import { useParams, useRouter } from 'next/navigation';
 import FormDialog from '@/components/formDialog/FormDialog';
 import TagForm from '@/components/tagForm/TagForm';
 import _ from 'lodash';
+import emitter from '@/lib/emitter';
 
 const columnHelper = createColumnHelper<Tag>();
 
@@ -45,11 +47,13 @@ const columns: ColumnDef<Tag, any>[] = [
     id: 'name',
     header: () => 'Name',
     cell: (info) => info.getValue(),
+    enableSorting: false,
   }),
   columnHelper.accessor((row) => row.color, {
     id: 'color',
     header: () => <span>Color</span>,
     cell: (info) => <span>{info.getValue()}</span>,
+    enableSorting: false,
   }),
   columnHelper.accessor('updatedAt', {
     id: 'updatedAt',
@@ -84,17 +88,34 @@ export default function Page() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'updatedAt',
+      desc: true,
+    },
+  ]);
+  const [count, setCount] = useState(1);
   const { data } = useQuery({
-    queryKey: ['tags', pagination.pageIndex, pagination.pageSize, id],
+    queryKey: ['tags', pagination.pageIndex, pagination.pageSize, id, sorting],
     queryFn: () => getTags({ ...pagination }),
   });
 
   useEffect(() => {
     setShow(!!params.id);
-  }, [params]);
+  }, [params.id]);
 
-  async function onClickDelete() {
-    console.log(rowSelection);
+  useEffect(() => {
+    setPagination({
+      pageIndex: data?.pageIndex || 0,
+      pageSize: data?.pageSize || 10,
+    });
+  }, [data?.pageIndex, data?.pageSize]);
+
+  useEffect(() => {
+    setCount(data?.count || 1);
+  }, [data?.count]);
+
+  async function deleteSelected() {
     let ids: string[] = Object.keys(rowSelection).map(
       (v) => data?.data[_.toNumber(v)].id as string,
     );
@@ -102,6 +123,13 @@ export default function Page() {
     await deleteTags(ids);
     await queryClient.invalidateQueries({ queryKey: ['tags'] });
     setRowSelection({});
+  }
+
+  async function onClickDelete() {
+    emitter.emitShowConfirmationDialog({
+      text: 'Are you sure you want to delete these tags?',
+      onClickOk: deleteSelected,
+    });
   }
 
   return (
@@ -132,11 +160,14 @@ export default function Page() {
               data={data?.data || []}
               pagination={pagination}
               setPagination={setPagination}
+              sorting={sorting}
+              setSorting={setSorting}
               columns={columns}
               dataFetchFn={() => []}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
               onClickDelete={onClickDelete}
+              count={count}
             />
           </div>
         </div>
